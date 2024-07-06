@@ -32,6 +32,14 @@ export const LogIn = () => {
       setErrorMsg('');
     }
   };
+
+  const log_in_with_google = () => {
+    console.log('log_in_with_google');
+  };
+
+  const log_in_with_github = () => {
+    console.log('log_in_with_github');
+  };
   // console.log(data);
   const {
     heading_view,
@@ -46,9 +54,9 @@ export const LogIn = () => {
     <>
       <ScrollView style={[scroll_view]}>
         <View style={[heading_view]}>
-          <Heading text="Log In" />
+          <Heading text="Let's you Log in" />
 
-          <HeadingText text="Please Log in" />
+          <HeadingText text="Welcome Back, You have been missed" />
         </View>
 
         <View style={[input_view]}>
@@ -81,12 +89,12 @@ export const LogIn = () => {
           </View>
         </View>
 
-        <Submit_btn onPress={submit_handle} text={'Log In'} />
+        <Submit_btn onPress={submit_handle} text={'Log in'} />
 
         <SomeText myStyle={{fontSize: 20}} text={'or'} />
 
         <Submit_btn
-          onPress={submit_handle}
+          onPress={log_in_with_google}
           text={'Log in with Google'}
           icon={'google'}
           textColor="black"
@@ -94,7 +102,7 @@ export const LogIn = () => {
           mode="outlined"
         />
         <Submit_btn
-          onPress={submit_handle}
+          onPress={log_in_with_github}
           text={'Log in with Github'}
           icon={'github'}
           textColor="black"
@@ -118,10 +126,28 @@ export const LogIn = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    paddingTop: 40,
   },
-  heading_view: {},
-  input_view: {},
-  err_msg: {},
-  forget_password: {},
-  navigate_view: {},
+  heading_view: {
+    gap: 10,
+    width: '75%',
+  },
+  input_view: {
+    marginVertical: 25,
+    gap: 5,
+  },
+  err_msg: {
+    color: 'red',
+    textAlign: 'left',
+  },
+  forget_password: {
+    textAlign: 'right',
+  },
+  navigate_view: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

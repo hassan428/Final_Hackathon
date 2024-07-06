@@ -12,6 +12,11 @@ export const SignUp = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const navigation = useNavigation();
 
+  const inputValue = (text, id) => {
+    text = text.split(' ').join('');
+    setData({...data, [id]: text});
+  };
+
   const submit_handle = () => {
     const values = Object.values(data);
     const isEmpty = values.some(
@@ -22,12 +27,15 @@ export const SignUp = () => {
     } else {
       setErrorMsg('');
     }
+    // console.log(data);
   };
-  console.log(data);
 
-  const inputValue = (text, id) => {
-    text = text.split(' ').join('');
-    setData({...data, [id]: text});
+  const sign_up_with_google = () => {
+    console.log('sign_up_with_google');
+  };
+
+  const sign_up_with_github = () => {
+    console.log('sign_up_with_github');
   };
 
   const {
@@ -41,9 +49,9 @@ export const SignUp = () => {
   return (
     <ScrollView style={[scroll_view]}>
       <View style={[heading_view]}>
-        <Heading text="Sign Up" />
+        <Heading text="Let's Sign Up" />
 
-        <HeadingText text="Please Sign Up" />
+        <HeadingText text="Hello user, you have a greatful journey" />
       </View>
 
       <View style={[input_view]}>
@@ -92,6 +100,23 @@ export const SignUp = () => {
 
       <Submit_btn onPress={submit_handle} text={'Sign Up'} />
 
+      <Submit_btn
+        onPress={sign_up_with_google}
+        text={'Sign Up with Google'}
+        icon={'google'}
+        textColor="black"
+        buttonColor="#E3E0E0"
+        mode="outlined"
+      />
+      <Submit_btn
+        onPress={sign_up_with_github}
+        text={'Sign Up with Github'}
+        icon={'github'}
+        textColor="black"
+        buttonColor="#E3E0E0"
+        mode="outlined"
+      />
+
       <View style={[navigate_view]}>
         <SomeText text={'Already have an account? '} />
         <SomeText
@@ -107,10 +132,28 @@ export const SignUp = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    paddingTop: 40,
   },
-  heading_view: {},
-  input_view: {},
-  err_msg: {},
-  forget_password: {},
-  navigate_view: {},
+  heading_view: {
+    gap: 10,
+    width: '75%',
+  },
+  input_view: {
+    marginVertical: 25,
+    gap: 5,
+  },
+  err_msg: {
+    color: 'red',
+    textAlign: 'left',
+  },
+  forget_password: {
+    textAlign: 'right',
+  },
+  navigate_view: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

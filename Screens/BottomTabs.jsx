@@ -1,9 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SignUp} from './SignUp';
 import {LogIn} from './LogIn';
-const Tab = createBottomTabNavigator();
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useRoute} from '@react-navigation/native';
@@ -31,6 +29,7 @@ const BottomTabs = () => {
       },
     },
   ];
+  const Tab = createBottomTabNavigator();
 
   return (
     <Tab.Navigator
@@ -56,5 +55,3 @@ const BottomTabs = () => {
 };
 
 export {BottomTabs};
-
-const styles = StyleSheet.create({});
