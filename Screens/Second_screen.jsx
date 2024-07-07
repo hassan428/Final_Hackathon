@@ -28,7 +28,7 @@ export const Second_screen = () => {
                 </View>
 
                 <View style={[btn_view]}>
-                    <ActiveBtn text={"Skip"} onPress={() => navigation.navigate('Third_screen')} />
+                    <ActiveBtn text={"Skip"} onPress={() => navigation.navigate('LogIn')} />
                     <IconButton
                         icon="arrow-right"
                         iconColor={primary}

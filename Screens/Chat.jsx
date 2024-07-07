@@ -1,12 +1,30 @@
-import { View } from "react-native"
-import { Text } from "react-native-paper"
+import {StyleSheet, View} from 'react-native';
+import {Text} from 'react-native-paper';
+import {AppBar} from '../component/AppBar';
+import {useNavigation} from '@react-navigation/native';
+import {Custom_input} from '../component/Custom_input';
 
 export const Chat = () => {
-    return (
-        <View>
-            <Text>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. In recusandae repellat dolor ullam animi, autem omnis possimus dolores a, sapiente voluptatibus maxime necessitatibus corporis! Nemo aspernatur delectus veniam obcaecati ipsam.
-            </Text>
-        </View>
-    )
-}
+  const navigation = useNavigation();
+  const {container} = style;
+  return (
+    <>
+      <AppBar
+        title={`Chat`}
+        leftIcon={'chevron-left'}
+        rightIcon={'plus'}
+        leftIconHandle={() => navigation.goBack()}
+      />
+      <View style={[container]}>
+        <Custom_input icon="magnify" placeholder="Search Profiles" />
+      </View>
+    </>
+  );
+};
+const style = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: 'white',
+    flex: 1,
+  },
+});

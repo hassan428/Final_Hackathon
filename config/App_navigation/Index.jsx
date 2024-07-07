@@ -13,8 +13,8 @@ import {Second_screen} from '../../Screens/Second_screen';
 import {Third_screen} from '../../Screens/Third_screen';
 
 const App_navigation = () => {
-  const [splash_screen, setSplash_screen] = useState(false);
-  const [initialRouteName, setInitialRouteName] = useState('BottomTabs');
+  const [splash_screen, setSplash_screen] = useState(true);
+  const [initialRouteName, setInitialRouteName] = useState('Welcome');
   const {islogged, loading} = useSelector(store => store.auth);
   const dispatch = useDispatch();
 

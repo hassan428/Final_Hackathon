@@ -19,7 +19,7 @@ export const Welcome = () => {
   return (
     <View style={[container]}>
       <Image
-        resizeMode="contain"
+        resizeMode="cover"
         source={require('../assets/welcom_screen_img.jpg')}
       />
       <View style={[get_start_container]}>

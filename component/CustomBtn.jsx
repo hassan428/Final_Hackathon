@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import { Button } from 'react-native-paper';
-import { primary } from '../config/App_navigation/themeConfig';
+import {Button} from 'react-native-paper';
+import {primary} from '../config/App_navigation/themeConfig';
 
 const styles = StyleSheet.create({
   active_btn: {
@@ -32,23 +32,26 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-const { fontFamily, active_btn, inActive_btn, submit_btn, submit_btn_text } =
+const {fontFamily, active_btn, inActive_btn, submit_btn, submit_btn_text} =
   styles;
 
-const ActiveBtn = (props) => {
+const ActiveBtn = props => {
   return (
-    <Button mode='text' labelStyle={[{ color: 'black', textAlign: 'left' }, fontFamily]} {...props}>
+    <Button
+      mode="text"
+      labelStyle={[{color: 'black', textAlign: 'left'}, fontFamily]}
+      {...props}>
       {props.text}
     </Button>
   );
 };
 
-const InActiveBtn = ({ myStyle, text, navigation }) => {
+const InActiveBtn = ({myStyle, text, navigation}) => {
   return (
     <TouchableOpacity
-      style={{ borderWidth: 0 }}
+      style={{borderWidth: 0}}
       onPress={() => navigation.navigate(text)}>
-      <Text style={[fontFamily, inActive_btn, { ...myStyle }]}>{text}</Text>
+      <Text style={[fontFamily, inActive_btn, {...myStyle}]}>{text}</Text>
     </TouchableOpacity>
   );
 };
@@ -56,7 +59,7 @@ const InActiveBtn = ({ myStyle, text, navigation }) => {
 const Submit_btn = props => {
   return (
     <Button
-      labelStyle={[{ fontSize: 15, color: 'white' }, fontFamily]}
+      labelStyle={[{fontSize: 15, color: 'white'}, fontFamily]}
       mode="elevated"
       elevation={5}
       style={{
@@ -73,4 +76,4 @@ const Submit_btn = props => {
   );
 };
 
-export { ActiveBtn, InActiveBtn, Submit_btn };
+export {ActiveBtn, InActiveBtn, Submit_btn};

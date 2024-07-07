@@ -19,7 +19,7 @@ export const Home = () => {
   const newDate = new Date();
   const date = newDate.getDate();
   const day = daysOfWeek[newDate.getDay()];
-  console.log(newDate.getDate());
+  // console.log(newDate.getDate());
 
   const {container, scroll_view, center} = styles;
   return (
@@ -64,20 +64,23 @@ export const Home = () => {
 
         <ProgressCard
           title="Productivity Mobile App"
-          time="2 min ago"
           heading="Create Details Booking"
-        />
-        
-        <ProgressCard
-          title="Productivity Mobile App"
           time="2 min ago"
-          heading="Create Details Booking"
+          percentage={60}
         />
 
         <ProgressCard
-          title="Productivity Mobile App"
-          time="2 min ago"
-          heading="Create Details Booking"
+          title="Banking Mobile App"
+          heading="Revision Home Page"
+          time="5 min ago"
+          percentage={70}
+        />
+
+        <ProgressCard
+          title="Online Course"
+          heading="Working On Landing Page"
+          time="7 min ago"
+          percentage={80}
         />
       </ScrollView>
     </>

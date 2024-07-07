@@ -1,10 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {SomeText} from '../component/Text_component';
-import {primary} from '../config/App_navigation/themeConfig';
+import {Circular_progress} from '../component/Circular_proress';
 
 export const ProgressCard = props => {
-  const {time, heading, title} = props;
+  const {time, heading, title, percentage} = props;
   const {container} = styles;
   return (
     <View style={[container]}>
@@ -13,18 +13,7 @@ export const ProgressCard = props => {
         <SomeText text={heading} myStyle={{fontWeight: 900, fontSize: 15}} />
         <SomeText text={time} />
       </View>
-      <SomeText
-        text={'60%'}
-        myStyle={{
-          fontWeight: 900,
-          fontSize: 15,
-          borderWidth: 5,
-          borderRadius: 100,
-          borderColor: primary,
-          padding: 10,
-          textAlign: 'center'
-        }}
-      />
+      <Circular_progress size={50} strokeWidth={8} percentage={percentage} />
     </View>
   );
 };

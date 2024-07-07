@@ -6,6 +6,7 @@ import {Avatar, ProgressBar} from 'react-native-paper';
 
 export const TaskCard = props => {
   const {heading, text, progress_str, progress_num, isThemeChange} = props;
+
   const styles = StyleSheet.create({
     container: {
       backgroundColor: isThemeChange ? primary : 'white',
@@ -14,6 +15,8 @@ export const TaskCard = props => {
       borderRadius: 25,
       marginRight: 20,
       maxWidth: '90%',
+      borderWidth: 2,
+      borderColor: isThemeChange ? 'white' : primary,
     },
     avatar_view: {
       flexDirection: 'row',
