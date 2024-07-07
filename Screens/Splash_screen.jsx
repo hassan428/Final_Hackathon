@@ -36,7 +36,7 @@ const Splash_screen = () => {
             opacity,
           },
         ]}>
-        <Logo iconSize={40} fontSize={30} />
+        <Logo  fontSize={40} />
       </Animated.View>
     </View>
   );

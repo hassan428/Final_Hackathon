@@ -4,7 +4,7 @@ const initialState = {
   uid: '',
   profile: null,
   islogged: false,
-  loading: true,
+  loading: false,
 };
 
 const auth_slice = createSlice({

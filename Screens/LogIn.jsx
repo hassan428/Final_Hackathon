@@ -1,27 +1,29 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
-import {Heading, HeadingText, SomeText} from '../component/Text_component';
-import {Submit_btn} from '../component/CustomBtn';
-import {Password_input} from '../component/Custom_input';
-import {useNavigation} from '@react-navigation/native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { Heading, HeadingText, SomeText } from '../component/Text_component';
+import { Submit_btn } from '../component/CustomBtn';
+import { Custom_input, Password_input } from '../component/Custom_input';
+import { useNavigation } from '@react-navigation/native';
 // import {
 //   getErrorEmailMessage,
 //   getErrorPasswordMessage,
 // } from '../utils/firebaseErrorMsg';
-import {TextInput} from 'react-native-paper';
+import { IconButton, TextInput } from 'react-native-paper';
+import { AppBar } from '../component/AppBar';
 
 export const LogIn = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
-  console.log('errorMsg', errorMsg);
+  // console.log('errorMsg', errorMsg);
   const navigation = useNavigation();
 
   const inputValue = (text, id) => {
     text = text.split(' ').join('');
-    setData({...data, [id]: text});
+    setData({ ...data, [id]: text });
   };
 
   const submit_handle = () => {
+    navigation.navigate('BottomTabs');
     const values = Object.values(data);
     const isEmpty = values.some(
       value => value === '' || value === null || value === undefined,
@@ -33,12 +35,17 @@ export const LogIn = () => {
     }
   };
 
+  // console.log('data', data)
   const log_in_with_google = () => {
     console.log('log_in_with_google');
   };
 
   const log_in_with_github = () => {
     console.log('log_in_with_github');
+  };
+
+  const forget_password_handle = () => {
+    console.log('forget_password_handle');
   };
   // console.log(data);
   const {
@@ -48,28 +55,28 @@ export const LogIn = () => {
     forget_password,
     navigate_view,
     err_msg,
+    text_style,
   } = styles;
 
   return (
     <>
+      <AppBar title={'Sign In'} leftIcon={'chevron-left'} leftIconHandle={() => navigation.goBack()} />
       <ScrollView style={[scroll_view]}>
         <View style={[heading_view]}>
-          <Heading text="Let's you Log in" />
+          <Heading text="Welcome Back" />
 
-          <HeadingText text="Welcome Back, You have been missed" />
+          <SomeText myStyle={text_style} text="Please Inter your email address and password for Login" />
         </View>
 
         <View style={[input_view]}>
+
           <View>
-            <TextInput
-              mode="outlined"
-              error={errorMsg.email && true}
-              label="email"
+            <Custom_input
+              placeholder={"Enter your email"}
               keyboardType="email-address"
-              right={<TextInput.Icon icon="email" />}
               value={data.email}
-              onChangeText={text => inputValue(text, 'email')}
-            />
+              error={errorMsg.email && true}
+              onChangeText={text => inputValue(text, 'email')} />
             {errorMsg.email && (
               <SomeText myStyle={err_msg} text={errorMsg.email} />
             )}
@@ -85,35 +92,36 @@ export const LogIn = () => {
               <SomeText myStyle={err_msg} text={errorMsg.password} />
             )}
 
-            <SomeText myStyle={forget_password} text={'Forget Password?'} />
+            <SomeText onPress={forget_password_handle} myStyle={forget_password} text={'Forget Password?'} />
           </View>
         </View>
 
-        <Submit_btn onPress={submit_handle} text={'Log in'} />
+        <Submit_btn onPress={submit_handle} text={'Sign In'} />
 
-        <SomeText myStyle={{fontSize: 20}} text={'or'} />
+        <SomeText text={'Signin with'} myStyle={{ textAlign: "center", marginVertical: 20 }} />
 
-        <Submit_btn
-          onPress={log_in_with_google}
-          text={'Log in with Google'}
-          icon={'google'}
-          textColor="black"
-          buttonColor="#E3E0E0"
-          mode="outlined"
-        />
-        <Submit_btn
-          onPress={log_in_with_github}
-          text={'Log in with Github'}
-          icon={'github'}
-          textColor="black"
-          buttonColor="#E3E0E0"
-          mode="outlined"
-        />
 
         <View style={[navigate_view]}>
-          <SomeText text={"Don't have an account? "} />
+
+          <IconButton
+            icon="apple"
+            // iconColor={''}
+            size={30}
+            onPress={log_in_with_github}
+          />
+
+          <IconButton
+            icon="google"
+            // iconColor={''}
+            size={30}
+            onPress={log_in_with_google}
+          />
+        </View>
+
+        <View style={[navigate_view]}>
+          <SomeText text={"Not Registrar Yet? "} />
           <SomeText
-            myStyle={{color: '#0059FF'}}
+            myStyle={{ color: '#0059FF' }}
             text={'Sign Up '}
             onPress={() => navigation.navigate('SignUp')}
           />
@@ -127,8 +135,7 @@ const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
     backgroundColor: 'white',
-    paddingHorizontal: 10,
-    paddingTop: 40,
+    padding: 20,
   },
   heading_view: {
     gap: 10,
@@ -136,18 +143,26 @@ const styles = StyleSheet.create({
   },
   input_view: {
     marginVertical: 25,
-    gap: 5,
+    gap: 30,
   },
   err_msg: {
     color: 'red',
     textAlign: 'left',
   },
   forget_password: {
+    marginTop: 5,
     textAlign: 'right',
+    fontWeight: 'bold'
   },
   navigate_view: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 20
   },
+  text_style: {
+    fontSize: 15,
+    color: '#8D8D8D',
+  },
+
 });
