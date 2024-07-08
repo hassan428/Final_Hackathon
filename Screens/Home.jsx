@@ -21,22 +21,32 @@ export const Home = () => {
   const day = daysOfWeek[newDate.getDay()];
   // console.log(newDate.getDate());
 
-  const {container, scroll_view, center} = styles;
+  const {
+    container,
+    scroll_view_horizontal,
+    center,
+    heading_view,
+    bgColor,
+    progress_view,
+  } = styles;
   return (
     <>
-      <AppBar
-        title={`${day}, ${date}`}
-        leftIcon={'table'}
-        rightIcon={'bell-outline'}
-      />
-      <ScrollView style={[container]}>
-        <Heading
-          myStyle={{width: '85%'}}
-          text={"Let's make a habits together  🙌"}
+      <View style={[bgColor]}>
+        <AppBar
+          title={`${day}, ${date}`}
+          leftIcon={'table'}
+          rightIcon={'bell-outline'}
         />
+
+        <View style={[heading_view]}>
+          <Heading
+            myStyle={{width: '85%'}}
+            text={"Let's make a habits together  🙌"}
+          />
+        </View>
         {/* const {heading, text, progress} = props; */}
 
-        <ScrollView horizontal style={[scroll_view]}>
+        <ScrollView horizontal style={[scroll_view_horizontal]}>
           <TaskCard
             heading={'Application Design'}
             text={'UI Design Kit'}
@@ -53,7 +63,7 @@ export const Home = () => {
           />
         </ScrollView>
 
-        <View style={[center]}>
+        <View style={[center, progress_view]}>
           <HeadingText text={'In Progress'} />
           <IconButton
             icon="chevron-right"
@@ -61,7 +71,9 @@ export const Home = () => {
             onPress={() => console.log('Pressed')}
           />
         </View>
+      </View>
 
+      <ScrollView contentContainerStyle={[container]} style={[bgColor]}>
         <ProgressCard
           title="Productivity Mobile App"
           heading="Create Details Booking"
@@ -69,6 +81,12 @@ export const Home = () => {
           percentage={60}
         />
 
+        <ProgressCard
+          title="Banking Mobile App"
+          heading="Revision Home Page"
+          time="5 min ago"
+          percentage={70}
+        />
         <ProgressCard
           title="Banking Mobile App"
           heading="Revision Home Page"
@@ -88,13 +106,20 @@ export const Home = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
+  bgColor: {
     backgroundColor: 'white',
-    // paddingLeft: 0,
   },
-  scroll_view: {
-    marginTop: 20,
+  container: {
+    paddingHorizontal: 20,
+  },
+  heading_view: {
+    padding: 20,
+  },
+  progress_view: {
+    paddingHorizontal: 20,
+  },
+  scroll_view_horizontal: {
+    // paddingTop: 20,
   },
   center: {
     flexDirection: 'row',

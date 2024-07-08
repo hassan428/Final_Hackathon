@@ -15,7 +15,13 @@ export const ProjectsCard = props => {
         </View>
         <SomeText
           text={progress_str}
-          myStyle={{borderWidth: 1, borderRadius: 20, borderColor: 'green'}}
+          myStyle={{
+            borderWidth: 1,
+            borderRadius: 20,
+            borderColor: 'green',
+            padding: 5,
+            fontWeight: 'bold',
+          }}
         />
       </View>
 

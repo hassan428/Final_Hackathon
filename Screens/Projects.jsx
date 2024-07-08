@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {Icon, Text} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
 import {useNavigation} from '@react-navigation/native';
@@ -27,8 +27,8 @@ export const Projects = () => {
           <ActiveBtn text="All" />
           <Icon source="table" size={30} />
         </View>
-        {/* progress_num, progress_str, heading, title */}
-        <View>
+
+        <ScrollView>
           <ProjectsCard
             progress_num={10 / 20}
             progress_str={'10/20'}
@@ -53,7 +53,7 @@ export const Projects = () => {
             heading={'Ui8 Platform`'}
             title={'Design'}
           />
-        </View>
+        </ScrollView>
       </View>
     </>
   );

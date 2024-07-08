@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
-import { TextInput } from 'react-native-paper';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {TextInput} from 'react-native-paper';
 
 const styles = StyleSheet.create({
   fontFamily: {
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
 });
-const { fontFamily, input_view, input } = styles;
+const {fontFamily, input_view, input} = styles;
 
 const Custom_input = props => {
   return (
@@ -30,7 +30,7 @@ const Custom_input = props => {
           primary: 'blue', // You can customize the primary color if needed
         },
       }}
-      contentStyle={{ ...fontFamily, fontWeight: 'bold' }}
+      contentStyle={{...fontFamily, fontWeight: 'bold'}}
       right={<TextInput.Icon icon={props.icon} />}
       {...props}
     />
@@ -52,7 +52,7 @@ const Password_input = props => {
         },
       }}
       placeholder={'Enter your password'}
-      contentStyle={{ ...fontFamily, fontWeight: 'bold' }}
+      contentStyle={{...fontFamily, fontWeight: 'bold'}}
       {...props}
       right={
         visibility ? (
@@ -65,4 +65,4 @@ const Password_input = props => {
   );
 };
 
-export { Custom_input, Password_input };
+export {Custom_input, Password_input};
