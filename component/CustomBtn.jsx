@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Button} from 'react-native-paper';
-import {primary} from '../config/App_navigation/themeConfig';
+import {primary} from '../config/themeConfig';
 
 const styles = StyleSheet.create({
   active_btn: {
@@ -32,8 +32,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-const {fontFamily, active_btn, inActive_btn, submit_btn, submit_btn_text} =
-  styles;
+const {fontFamily, inActive_btn} = styles;
 
 const ActiveBtn = props => {
   return (
@@ -65,7 +64,6 @@ const Submit_btn = props => {
       style={{
         width: '100%',
         borderRadius: 10,
-        // marginVertical: 15,
         padding: 3,
         backgroundColor: primary,
         ...props.myStyle,

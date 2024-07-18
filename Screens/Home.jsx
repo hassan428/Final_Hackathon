@@ -68,6 +68,7 @@ export const Home = () => {
           <IconButton
             icon="chevron-right"
             size={30}
+            style={{left: 10}}
             onPress={() => console.log('Pressed')}
           />
         </View>

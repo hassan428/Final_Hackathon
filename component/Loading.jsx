@@ -1,11 +1,7 @@
 import * as React from 'react';
 import {ActivityIndicator} from 'react-native-paper';
+import {primary} from '../config/themeConfig';
 
 export const Loading = () => (
-  <ActivityIndicator
-    animating={true}
-    size={40}
-    color={'#fec549'}
-    style={{flex: 1}}
-  />
+  <ActivityIndicator size={45} color={primary} style={{flex: 1}} />
 );

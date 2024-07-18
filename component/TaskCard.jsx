@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {HeadingText, SomeText} from './Text_component';
-import {primary} from '../config/App_navigation/themeConfig';
+import {primary} from '../config/themeConfig';
 import {Avatar, ProgressBar} from 'react-native-paper';
 
 export const TaskCard = props => {
@@ -14,9 +14,10 @@ export const TaskCard = props => {
       padding: 30,
       borderRadius: 25,
       marginRight: 20,
-      maxWidth: '90%',
+      marginLeft: 5,
+      maxWidth: '80%',
       borderWidth: 2,
-      borderColor: isThemeChange ? 'white' : primary,
+      borderColor: primary,
     },
     avatar_view: {
       flexDirection: 'row',

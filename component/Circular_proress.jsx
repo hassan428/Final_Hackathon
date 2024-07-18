@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
-import {primary} from '../config/App_navigation/themeConfig';
+import {primary} from '../config/themeConfig';
 
 export const Circular_progress = ({size, strokeWidth, percentage}) => {
   const radius = (size - strokeWidth) / 2;

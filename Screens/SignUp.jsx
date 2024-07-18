@@ -1,37 +1,82 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
-import {Heading, HeadingText, SomeText} from '../component/Text_component';
+import {Heading, SomeText} from '../component/Text_component';
 import {Submit_btn} from '../component/CustomBtn';
 import {Custom_input, Password_input} from '../component/Custom_input';
 import {useNavigation} from '@react-navigation/native';
-// import {
-//   getErrorEmailMessage,
-//   getErrorPasswordMessage,
-// } from '../utils/firebaseErrorMsg';
-import {IconButton, TextInput} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
+import {api_signup} from '../config/Apis';
+import {useDispatch} from 'react-redux';
+import {profile_action} from '../store/slices/auth_slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {_id_name} from '../utils/constants';
+import {validateEmail} from '../utils/validate_email';
+import {Loading} from '../component/Loading';
 
 export const SignUp = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
-  // console.log('errorMsg', errorMsg);
+  const [btn_loading, set_btn_loading] = useState(false);
   const navigation = useNavigation();
+  const [loading, set_loading] = useState(false);
+  const dispatch = useDispatch();
+
+  const loadingOffHandle = () =>
+    setTimeout(() => {
+      set_loading(false);
+    }, 1000);
 
   const inputValue = (text, id) => {
-    text = text.split(' ').join('');
+    if (id !== 'full_name') text = text.split(' ').join('');
     setData({...data, [id]: text});
   };
 
-  const submit_handle = () => {
-    navigation.navigate('BottomTabs');
-    const values = Object.values(data);
-    const isEmpty = values.some(
-      value => value === '' || value === null || value === undefined,
-    );
-    if (isEmpty || values.length < 2) {
-      setErrorMsg('Please fill all the fields');
-    } else {
-      setErrorMsg('');
+  const submit_handle = async () => {
+    try {
+      const values = Object.values(data);
+      const isEmpty = values.some(
+        value => value === '' || value === null || value === undefined,
+      );
+      if (isEmpty || values.length < 5) {
+        setErrorMsg({other: 'Please fill all the fields'});
+      } else if (data.password?.length < 8) {
+        setErrorMsg({
+          password: 'Password too short! Must be 8+ characters.',
+        });
+      } else if (!validateEmail(data.email)) {
+        setErrorMsg({email: 'Please enter a valid email address'});
+      } else {
+        setErrorMsg('');
+        set_btn_loading(true);
+        const res = await api_signup(data);
+        set_loading(true);
+        // console.log('res', res.data.data);
+        await AsyncStorage.setItem(_id_name, res.data.data._id);
+        dispatch(profile_action(res.data.data));
+        navigation.navigate('OTPVerification');
+        loadingOffHandle();
+        set_btn_loading(false);
+      }
+    } catch (err) {
+      set_btn_loading(false);
+      console.log(err.response.data);
+      if (err.response.data) {
+        const {message, success} = err.response.data;
+        if (message.includes('duplicate')) {
+          if (message.includes('username:')) {
+            setErrorMsg({username: 'Username already exists!'});
+          } else if (message.includes('email:')) {
+            setErrorMsg({email: 'email already exists!'});
+          } else if (message.includes('phone_number:')) {
+            setErrorMsg({phone_number: 'Phone Number already exists!'});
+          }
+        } else {
+          setErrorMsg({other: message});
+        }
+      } else {
+        setErrorMsg({other: err.message});
+      }
     }
   };
 
@@ -44,7 +89,6 @@ export const SignUp = () => {
     console.log('log_in_with_github');
   };
 
-  console.log('data', data);
   const {
     heading_view,
     scroll_view,
@@ -54,7 +98,9 @@ export const SignUp = () => {
     text_style,
   } = styles;
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
       <AppBar
         title={'Sign Up'}
@@ -134,7 +180,17 @@ export const SignUp = () => {
           </View>
         </View>
 
-        <Submit_btn onPress={submit_handle} text={'Sign In'} />
+        <SomeText
+          myStyle={{...err_msg, textAlign: 'center', marginBottom: 5}}
+          text={errorMsg.other}
+        />
+
+        <Submit_btn
+          loading={btn_loading}
+          disabled={btn_loading}
+          onPress={submit_handle}
+          text={'Sign In'}
+        />
 
         <SomeText
           text={'Signup with'}

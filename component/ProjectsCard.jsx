@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SomeText} from './Text_component';
 import {Avatar, ProgressBar} from 'react-native-paper';
+import {primary} from '../config/themeConfig';
 
 export const ProjectsCard = props => {
   const {progress_num, progress_str, heading, title} = props;
@@ -42,7 +43,7 @@ export const ProjectsCard = props => {
           />
         </View>
         <View style={{width: '80%'}}>
-          <ProgressBar progress={progress_num} color={'green'} />
+          <ProgressBar progress={progress_num} color={primary} />
         </View>
       </View>
     </View>

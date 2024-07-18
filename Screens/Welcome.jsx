@@ -4,7 +4,7 @@ import {Submit_btn} from '../component/CustomBtn';
 import {useNavigation} from '@react-navigation/native';
 import {Logo} from '../component/Logo';
 import {Heading, SomeText} from '../component/Text_component';
-import {primary} from '../config/App_navigation/themeConfig';
+import {primary} from '../config/themeConfig';
 
 export const Welcome = () => {
   const navigation = useNavigation();
@@ -20,7 +20,7 @@ export const Welcome = () => {
     <View style={[container]}>
       <Image
         resizeMode="cover"
-        source={require('../assets/welcom_screen_img.jpg')}
+        source={require('../assets/welcom_screen_img.png')}
       />
       <View style={[get_start_container]}>
         <View style={[get_start_view]}>

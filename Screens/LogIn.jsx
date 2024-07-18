@@ -1,37 +1,76 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
-import { Heading, HeadingText, SomeText } from '../component/Text_component';
-import { Submit_btn } from '../component/CustomBtn';
-import { Custom_input, Password_input } from '../component/Custom_input';
-import { useNavigation } from '@react-navigation/native';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
+import {Heading, HeadingText, SomeText} from '../component/Text_component';
+import {Submit_btn} from '../component/CustomBtn';
+import {Custom_input, Password_input} from '../component/Custom_input';
+import {useNavigation} from '@react-navigation/native';
 // import {
 //   getErrorEmailMessage,
 //   getErrorPasswordMessage,
 // } from '../utils/firebaseErrorMsg';
-import { IconButton, TextInput } from 'react-native-paper';
-import { AppBar } from '../component/AppBar';
+import {IconButton, TextInput} from 'react-native-paper';
+import {AppBar} from '../component/AppBar';
+import {api_login, api_send_otp} from '../config/Apis';
+import {validateEmail} from '../utils/validate_email';
+import {useDispatch} from 'react-redux';
+import {
+  islogged_action,
+  loading_action,
+  profile_action,
+} from '../store/slices/auth_slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {token_name} from '../utils/constants';
+import {Loading} from '../component/Loading';
 
 export const LogIn = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
-  // console.log('errorMsg', errorMsg);
+  const [btn_loading, set_btn_loading] = useState(false);
+  const [loading, set_loading] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const loadingOffHandle = () =>
+    setTimeout(() => {
+      set_loading(false);
+    }, 1000);
 
   const inputValue = (text, id) => {
     text = text.split(' ').join('');
-    setData({ ...data, [id]: text });
+    setData({...data, [id]: text});
   };
 
-  const submit_handle = () => {
-    navigation.navigate('BottomTabs');
-    const values = Object.values(data);
-    const isEmpty = values.some(
-      value => value === '' || value === null || value === undefined,
-    );
-    if (isEmpty || values.length < 2) {
-      setErrorMsg('Please fill all the fields');
-    } else {
-      setErrorMsg('');
+  const submit_handle = async () => {
+    try {
+      const values = Object.values(data);
+      const isEmpty = values.some(
+        value => value === '' || value === null || value === undefined,
+      );
+      if (isEmpty || values.length < 2) {
+        setErrorMsg({other: 'Please fill all the fields'});
+      } else if (!validateEmail(data.email)) {
+        setErrorMsg({email: 'Please enter a valid email address'});
+      } else {
+        setErrorMsg('');
+        set_btn_loading(true);
+        const res = await api_login(data);
+        set_loading(true);
+        dispatch(profile_action(res.data.data));
+        await AsyncStorage.setItem(token_name, res.data.token);
+        dispatch(islogged_action(true));
+        console.log('res', res.data);
+        set_loading(false);
+      }
+    } catch (err) {
+      set_loading(false);
+      set_btn_loading(false);
+      const {message, success} = err.response.data;
+      if (message.includes('password')) {
+        setErrorMsg({password: message});
+      } else {
+        setErrorMsg({other: message});
+      }
+      console.log(message);
     }
   };
 
@@ -44,8 +83,22 @@ export const LogIn = () => {
     console.log('log_in_with_github');
   };
 
-  const forget_password_handle = () => {
-    console.log('forget_password_handle');
+  const forget_password_handle = async () => {
+    if (!validateEmail(data.email)) {
+      setErrorMsg({email: 'Please enter a valid email address.'});
+    } else {
+      setErrorMsg({});
+      try {
+        set_loading(true);
+        const res = await api_send_otp(data);
+        navigation.navigate('OTPVerification', data.email);
+        loadingOffHandle();
+      } catch (error) {
+        set_loading(false);
+        const {message, success} = err.response.data;
+        setErrorMsg({other: message});
+      }
+    }
   };
   // console.log(data);
   const {
@@ -58,25 +111,34 @@ export const LogIn = () => {
     text_style,
   } = styles;
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
-      <AppBar title={'Sign In'} leftIcon={'chevron-left'} leftIconHandle={() => navigation.goBack()} />
+      <AppBar
+        title={'Sign In'}
+        leftIcon={'chevron-left'}
+        leftIconHandle={() => navigation.goBack()}
+      />
       <ScrollView style={[scroll_view]}>
         <View style={[heading_view]}>
           <Heading text="Welcome Back" />
 
-          <SomeText myStyle={text_style} text="Please Inter your email address and password for Login" />
+          <SomeText
+            myStyle={text_style}
+            text="Please Inter your email address and password for Login"
+          />
         </View>
 
         <View style={[input_view]}>
-
           <View>
             <Custom_input
-              placeholder={"Enter your email"}
+              placeholder={'Enter your email'}
               keyboardType="email-address"
               value={data.email}
               error={errorMsg.email && true}
-              onChangeText={text => inputValue(text, 'email')} />
+              onChangeText={text => inputValue(text, 'email')}
+            />
             {errorMsg.email && (
               <SomeText myStyle={err_msg} text={errorMsg.email} />
             )}
@@ -92,17 +154,31 @@ export const LogIn = () => {
               <SomeText myStyle={err_msg} text={errorMsg.password} />
             )}
 
-            <SomeText onPress={forget_password_handle} myStyle={forget_password} text={'Forget Password?'} />
+            <SomeText
+              onPress={forget_password_handle}
+              myStyle={forget_password}
+              text={'Forgot Password?'}
+            />
           </View>
         </View>
 
-        <Submit_btn onPress={submit_handle} text={'Sign In'} />
+        <SomeText
+          myStyle={{...err_msg, textAlign: 'center', marginBottom: 5}}
+          text={errorMsg.other}
+        />
+        <Submit_btn
+          loading={btn_loading}
+          disabled={btn_loading}
+          onPress={submit_handle}
+          text={'Sign In'}
+        />
 
-        <SomeText text={'Signin with'} myStyle={{ textAlign: "center", marginVertical: 20 }} />
-
+        <SomeText
+          text={'Signin with'}
+          myStyle={{textAlign: 'center', marginVertical: 20}}
+        />
 
         <View style={[navigate_view]}>
-
           <IconButton
             icon="apple"
             // iconColor={''}
@@ -119,9 +195,9 @@ export const LogIn = () => {
         </View>
 
         <View style={[navigate_view]}>
-          <SomeText text={"Not Registrar Yet? "} />
+          <SomeText text={'Not Registrar Yet? '} />
           <SomeText
-            myStyle={{ color: '#0059FF' }}
+            myStyle={{color: '#0059FF'}}
             text={'Sign Up '}
             onPress={() => navigation.navigate('SignUp')}
           />
@@ -152,17 +228,16 @@ const styles = StyleSheet.create({
   forget_password: {
     marginTop: 5,
     textAlign: 'right',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   navigate_view: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   text_style: {
     fontSize: 15,
     color: '#8D8D8D',
   },
-
 });
