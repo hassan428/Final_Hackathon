@@ -4,7 +4,6 @@ const {
   verify_otp,
   logOut,
   signUp,
-  forget_password,
 } = require("../controllers/auth_controllers");
 const auth_check = require("../middleware/auth_check_middleware");
 // const create_post = require("../controllers/create_post");
@@ -19,8 +18,6 @@ router.post("/signup", non_verify_email, signUp);
 router.post("/login", logIn);
 router.post("/verify_otp", otpVerifyMiddleWare, verify_otp);
 router.post("/send_otp", send_otp);
-router.post("/forget_password", otpVerifyMiddleWare, forget_password);
-
 
 router.get("/auth_check", auth_check, send_data);
 router.post("/set_new_password", set_new_password);

@@ -5,18 +5,12 @@ const { generateOtp } = require("../services/genereate_otp");
 const user_model = require("../models_schema/user_profile");
 const code_model = require("../models_schema/user_codes");
 
-const { GENSALT, JWT_SECRET, COOKIE_AUTH_NAME } = process.env;
+const { GENSALT, JWT_SECRET } = process.env;
 
 const signUp = async (req, res, next) => {
   try {
     const { user } = req;
     const { password, username, email } = user;
-    if (password.length < 8) {
-      next({
-        message: "Your password must be more than 8 characters",
-        status: 400,
-      });
-    }
 
     const genSalt = bcrypt.genSaltSync(+GENSALT);
     const hash = bcrypt.hashSync(password, genSalt);
@@ -76,36 +70,29 @@ const logIn = async (req, res, next) => {
 
     const jwt_payload = { id: find_user._id };
 
-    const create_token = jwt.sign(jwt_payload, JWT_SECRET, { expiresIn: "7d" });
-    // const expires_cookie = new Date(Date.now() + 60 * 60 * 24 * 30);
+    const token = jwt.sign(jwt_payload, JWT_SECRET, { expiresIn: "7d" });
 
-    // res.cookie(COOKIE_AUTH_NAME, create_token, {
-    //   maxAge: expires_cookie,
-    //   // httpOnly: true,
-    //   // secure: true,
-    //   // sameSite: "none",
-    // });
     return res.status(200).json({
       success: true,
       message: "user found successfully",
       data: send_data,
-      create_token,
+      token,
     });
   } catch (error) {
     next(error);
   }
 };
 
-const logOut = async (req, res, next) => {
-  try {
-    res.cookie(COOKIE_AUTH_NAME, "empty", { maxAge: 5000 });
-    return res.status(200).json({
-      success: true,
-      message: "Logout successful. Thank you for using our service!",
-    });
-  } catch (error) {}
-  next(error);
-};
+// const logOut = async (req, res, next) => {
+//   try {
+//     res.cookie(COOKIE_AUTH_NAME, "empty", { maxAge: 5000 });
+//     return res.status(200).json({
+//       success: true,
+//       message: "Logout successful. Thank you for using our service!",
+//     });
+//   } catch (error) {}
+//   next(error);
+// };
 
 const verify_otp = async (req, res, next) => {
   try {
@@ -115,23 +102,15 @@ const verify_otp = async (req, res, next) => {
       await find_user.updateOne({ isVerified: true });
 
       const jwt_payload = { id: find_user._id };
-      const create_token = jwt.sign(jwt_payload, JWT_SECRET, {
+      const token = jwt.sign(jwt_payload, JWT_SECRET, {
         expiresIn: "7d",
       });
 
-      // const expires_cookie = new Date(Date.now() + 60 * 60 * 24 * 30);
-
-      // res.cookie(COOKIE_AUTH_NAME, create_token, {
-      //   maxAge: expires_cookie,
-      //   // httpOnly: true,
-      //   // secure: true,
-      //   // sameSite: "none",
-      // });
-
       return res.status(200).json({
         success: true,
         message: "SuccessFully Verified!",
-        create_token,
+        token,
+        data: find_user,
       });
     }
   } catch (error) {
@@ -139,21 +118,4 @@ const verify_otp = async (req, res, next) => {
   }
 };
 
-const forget_password = async (req, res, next) => {
-  const { otp, code, find_user, otpFound } = req.user;
-
-  try {
-    if (code == otp) {
-      await otpFound.deleteOne();
-      // token send
-      return res.status(200).json({
-        success: true,
-        message: "SuccessFully Verified!",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports = { logOut, forget_password, signUp, logIn, verify_otp };
+module.exports = { /*logOut,*/ signUp, logIn, verify_otp };

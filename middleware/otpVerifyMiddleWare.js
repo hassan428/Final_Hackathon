@@ -3,14 +3,21 @@ const user_model = require("../models_schema/user_profile");
 
 const otpVerifyMiddleWare = async (req, res, next) => {
   try {
-    const { code: otp, email } = req.body;
-    const find_user = await user_model.findOne({ email });
+    const { code: otp, _id, email } = req.body;
+    // console.log("req.body", req.body);
+    const find_user = _id
+      ? await user_model.findById(_id)
+      : await user_model.findOne({ email });
+    // console.log("find_user", find_user);
 
     if (!find_user) {
       next({ message: "user not found", status: 404 });
     }
+    // console.log("find_user._id", find_user._id);
 
     const otpFound = await code_model.findOne({ user_id: find_user._id });
+    // console.log("otpFound", otpFound);
+
     if (!otpFound) {
       next({ message: "otp not found", status: 404 });
     }

@@ -1,12 +1,11 @@
 const jwt = require("jsonwebtoken");
 const user_model = require("../models_schema/user_profile");
-const { COOKIE_AUTH_NAME, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 const auth_check = async (req, res, next) => {
   try {
     const auth_token = req.headers.authorization.split(" ")[1];
-    console.log("auth_token", auth_token);
-    // const token = cookies[COOKIE_AUTH_NAME];
+    // console.log("auth_token", auth_token);
 
     if (!auth_token) {
       next({ message: "Unauthorized", status: 401 });

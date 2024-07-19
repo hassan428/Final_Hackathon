@@ -9,7 +9,6 @@ const error_handler = (err, req, res, next) => {
   if (err.status) status = err.status;
 
   if (err.message) data.message = err.message;
-
   return res.status(status).json(data);
 };
 

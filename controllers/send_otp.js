@@ -26,7 +26,10 @@ const send_otp = async (req, res, next) => {
     });
     return res
       .status(200)
-      .json({ success: true, message: "The OTP has been sent to you." });
+      .json({
+        success: true,
+        message: "The OTP has been sent to your email address",
+      });
   } catch (error) {
     next(error);
   }

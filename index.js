@@ -9,15 +9,15 @@ const connect_to_database = require("./config/mongoDb");
 const error_handler = require("./controllers/error_handler");
 
 try {
-  app.use(
-    cors({
-      origin: function (origin, callback) {
-        return callback(null, true);
-      },
-      credentials: true,
-      optionsSuccessStatus: 200,
-    })
-  );
+  // app.use(
+  //   cors({
+  //     origin: function (origin, callback) {
+  //       return callback(null, true);
+  //     },
+  //     credentials: true,
+  //     optionsSuccessStatus: 200,
+  //   })
+  // );
 
   app.use(cookieParser());
   // Note: cookie parser must be used before express.json() and express.use(allRoutes);
@@ -25,7 +25,7 @@ try {
   app.use(allRoutes);
   connect_to_database();
 
-  app.use(error_handler)
+  app.use(error_handler);
 } catch (error) {
   console.log(error);
 }
