@@ -1,9 +1,10 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
-import {primary} from '../config/themeConfig';
+import {useSelector} from 'react-redux';
 
 export const Circular_progress = ({size, strokeWidth, percentage}) => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (circumference * percentage) / 100;
@@ -37,6 +38,7 @@ export const Circular_progress = ({size, strokeWidth, percentage}) => {
           fontFamily: 'arial',
           fontSize: size / 4,
           fontWeight: 'bold',
+          color,
         }}>
         {percentage}%
       </Text>

@@ -4,10 +4,12 @@ import {AppBar} from '../component/AppBar';
 import {useNavigation} from '@react-navigation/native';
 import {Custom_input} from '../component/Custom_input';
 import {Chat_card} from '../component/Chat_card';
+import {useSelector} from 'react-redux';
 
 export const Chat = () => {
   const navigation = useNavigation();
   const {container} = style;
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   return (
     <>
       <AppBar
@@ -16,13 +18,13 @@ export const Chat = () => {
         rightIcon={'plus'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <View style={[container]}>
+      <View style={[container, {backgroundColor}]}>
         <Custom_input icon="magnify" placeholder="Search Profiles" />
 
-        <Chat_card />
-        <Chat_card />
-        <Chat_card />
-        <Chat_card />
+        <Chat_card color={color} />
+        <Chat_card color={color} />
+        <Chat_card color={color} />
+        <Chat_card color={color} />
       </View>
     </>
   );
@@ -30,7 +32,6 @@ export const Chat = () => {
 const style = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: 'white',
     flex: 1,
   },
 });

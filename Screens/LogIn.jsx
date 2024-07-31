@@ -12,7 +12,7 @@ import {IconButton, TextInput} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
 import {api_login, api_send_otp} from '../config/Apis';
 import {validateEmail} from '../utils/validate_email';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   islogged_action,
   loading_action,
@@ -29,7 +29,9 @@ export const LogIn = () => {
   const [loading, set_loading] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
   const loadingOffHandle = () =>
     setTimeout(() => {
       set_loading(false);
@@ -120,7 +122,7 @@ export const LogIn = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <ScrollView style={[scroll_view]}>
+      <ScrollView style={[scroll_view, {backgroundColor}]}>
         <View style={[heading_view]}>
           <Heading text="Welcome Back" />
 
@@ -181,14 +183,14 @@ export const LogIn = () => {
         <View style={[navigate_view]}>
           <IconButton
             icon="apple"
-            // iconColor={''}
+            iconColor={color}
             size={30}
             onPress={log_in_with_github}
           />
 
           <IconButton
             icon="google"
-            // iconColor={''}
+            iconColor={color}
             size={30}
             onPress={log_in_with_google}
           />
@@ -197,7 +199,7 @@ export const LogIn = () => {
         <View style={[navigate_view]}>
           <SomeText text={'Not Registrar Yet? '} />
           <SomeText
-            myStyle={{color: '#0059FF'}}
+            myStyle={{color: primary}}
             text={'Sign Up '}
             onPress={() => navigation.navigate('SignUp')}
           />
@@ -210,7 +212,6 @@ export const LogIn = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   heading_view: {

@@ -3,7 +3,7 @@ import React from 'react';
 import {Avatar, Badge, IconButton} from 'react-native-paper';
 import {SomeText} from './Text_component';
 
-export const Chat_card = () => {
+export const Chat_card = ({color}) => {
   const {aligning} = styles;
   return (
     <View
@@ -30,7 +30,7 @@ export const Chat_card = () => {
           <SomeText text={'Active now'} />
         </View>
       </View>
-      <IconButton icon={'camera-outline'} size={30} />
+      <IconButton icon={'camera-outline'} iconColor={color} size={30} />
     </View>
   );
 };

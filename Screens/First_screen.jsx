@@ -3,29 +3,29 @@ import React from 'react';
 import {ActiveBtn, Submit_btn} from '../component/CustomBtn';
 import {useNavigation} from '@react-navigation/native';
 import {Logo} from '../component/Logo';
-import {primary} from '../config/themeConfig';
 import {IconButton, ProgressBar} from 'react-native-paper';
 import {
   Start_screen_text,
   Start_screen_title,
 } from '../component/Text_component';
+import {useSelector} from 'react-redux';
 
 export const First_screen = () => {
   const navigation = useNavigation();
-
-  const {
-    container,
-    get_start_view,
-    fontFamily,
-    text_style,
-    btn_view,
-    progress_view,
-  } = styles;
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
+  // require('../assets/light_mode/third_screen_img.jpeg')
+  const {container, get_start_view, btn_view, progress_view} = styles;
   return (
-    <View style={[container]}>
+    <View style={[container, {backgroundColor}]}>
       <Image
         resizeMode="contain"
-        source={require('../assets/first_screen_img.jpeg')}
+        source={
+          dark_mode
+            ? require('../assets/dark_mode/first_screen_img.jpeg')
+            : require('../assets/light_mode/first_screen_img.jpeg')
+        }
       />
 
       <View style={[get_start_view]}>
@@ -63,16 +63,11 @@ export const First_screen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
   },
   get_start_view: {
     width: '100%',
     flex: 1,
     gap: 15,
-  },
-
-  fontFamily: {
-    fontFamily: 'arial',
   },
   btn_view: {
     flexDirection: 'row',

@@ -5,6 +5,7 @@ import {Circular_progress} from '../component/Circular_proress';
 
 export const ProgressCard = props => {
   const {time, heading, title, percentage} = props;
+
   const {container} = styles;
   return (
     <View style={[container]}>
@@ -20,7 +21,7 @@ export const ProgressCard = props => {
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 0.3,
+    borderWidth: 1,
     borderColor: 'gray',
     padding: 10,
     borderRadius: 10,

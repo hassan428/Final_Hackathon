@@ -1,8 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Button} from 'react-native-paper';
-import {primary} from '../config/themeConfig';
-
+import {useSelector} from 'react-redux';
 const styles = StyleSheet.create({
   active_btn: {
     color: '#00A3FF',
@@ -35,10 +34,16 @@ const styles = StyleSheet.create({
 const {fontFamily, inActive_btn} = styles;
 
 const ActiveBtn = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
   return (
     <Button
       mode="text"
-      labelStyle={[{color: 'black', textAlign: 'left'}, fontFamily]}
+      labelStyle={[
+        {color, textAlign: 'left'},
+        fontFamily,
+        {...props.myLabelStyle},
+      ]}
       {...props}>
       {props.text}
     </Button>
@@ -56,6 +61,8 @@ const InActiveBtn = ({myStyle, text, navigation}) => {
 };
 
 const Submit_btn = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
   return (
     <Button
       labelStyle={[{fontSize: 15, color: 'white'}, fontFamily]}

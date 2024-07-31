@@ -1,36 +1,28 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {HeadingText, SomeText} from './Text_component';
-import {primary} from '../config/themeConfig';
 import {Avatar, ProgressBar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 
 export const TaskCard = props => {
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
   const {heading, text, progress_str, progress_num, isThemeChange} = props;
 
-  const styles = StyleSheet.create({
+  const styles2 = StyleSheet.create({
+    ...styles,
     container: {
-      backgroundColor: isThemeChange ? primary : 'white',
-      gap: 15,
-      padding: 30,
-      borderRadius: 25,
-      marginRight: 20,
-      marginLeft: 5,
-      maxWidth: '80%',
-      borderWidth: 2,
+      ...styles.container,
+      backgroundColor: isThemeChange ? primary : backgroundColor,
       borderColor: primary,
     },
-    avatar_view: {
-      flexDirection: 'row',
-    },
-    second_container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
     fontColor: {
-      color: isThemeChange ? 'white' : primary,
+      color: dark_mode ? 'white' : isThemeChange ? 'white' : primary,
     },
   });
-  const {container, avatar_view, second_container, fontColor} = styles;
+
+  const {container, avatar_view, second_container, fontColor} = styles2;
   return (
     <View style={[container]}>
       <View>
@@ -76,3 +68,21 @@ export const TaskCard = props => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    gap: 15,
+    padding: 30,
+    borderRadius: 25,
+    marginRight: 20,
+    marginLeft: 5,
+    maxWidth: '80%',
+    borderWidth: 2,
+  },
+  avatar_view: {
+    flexDirection: 'row',
+  },
+  second_container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

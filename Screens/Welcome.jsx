@@ -4,10 +4,11 @@ import {Submit_btn} from '../component/CustomBtn';
 import {useNavigation} from '@react-navigation/native';
 import {Logo} from '../component/Logo';
 import {Heading, SomeText} from '../component/Text_component';
-import {primary} from '../config/themeConfig';
+import {useSelector} from 'react-redux';
 
 export const Welcome = () => {
   const navigation = useNavigation();
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
 
   const {
     container,
@@ -17,14 +18,14 @@ export const Welcome = () => {
     get_start_container,
   } = styles;
   return (
-    <View style={[container]}>
+    <View style={[container, {backgroundColor: primary}]}>
       <Image
         resizeMode="cover"
         source={require('../assets/welcom_screen_img.png')}
       />
-      <View style={[get_start_container]}>
+      <View style={[get_start_container, {backgroundColor}]}>
         <View style={[get_start_view]}>
-          <Logo fontSize={40} />
+          <Logo fontSize={40} logoColor={primary} />
 
           <Heading myStyle={title_style} text={'Building Better Workplaces'} />
 
@@ -46,10 +47,8 @@ export const Welcome = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: primary,
   },
   get_start_container: {
     width: '100%',
@@ -58,7 +57,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    backgroundColor: 'white',
   },
   get_start_view: {
     width: '70%',
@@ -69,11 +67,10 @@ const styles = StyleSheet.create({
   },
   title_style: {
     textAlign: 'center',
-    color: 'black',
   },
   text_style: {
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: 13,
     color: '#8D8D8D',
     width: '92%',
     marginBottom: 20,

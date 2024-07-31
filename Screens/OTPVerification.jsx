@@ -6,7 +6,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {AppBar} from '../component/AppBar';
 import {api_verify_otp} from '../config/Apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {_id_name, token_name} from '../utils/constants';
 import {islogged_action, profile_action} from '../store/slices/auth_slice';
 import {Loading} from '../component/Loading';
@@ -20,6 +20,9 @@ export const OTPVerification = () => {
   const dispatch = useDispatch();
   const {params: email_param} = useRoute();
   const [loading, set_loading] = useState(false);
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
 
   const handleChange = (text, index) => {
     if (text.length <= 1) {
@@ -42,6 +45,7 @@ export const OTPVerification = () => {
         setErrorMsg('');
         // console.log('otpCode', otpCode);
         const _id = await AsyncStorage.getItem(_id_name);
+        // console.log('_id', _id);
         const res = await api_verify_otp({
           code: otpCode,
           _id,
@@ -79,7 +83,7 @@ export const OTPVerification = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <ScrollView style={[scroll_view]}>
+      <ScrollView style={[scroll_view, {backgroundColor}]}>
         <View style={[heading_view]}>
           <Heading text="Verify Your Email" />
           <SomeText
@@ -98,7 +102,7 @@ export const OTPVerification = () => {
               <TextInput
                 key={index}
                 ref={el => (inputs.current[index] = el)}
-                style={[otp_input, errorMsg && {borderColor: 'red'}]}
+                style={[otp_input, {color}, errorMsg && {borderColor: 'red'}]}
                 value={digit}
                 onChangeText={text => handleChange(text, index)}
                 keyboardType="number-pad"
@@ -122,7 +126,6 @@ export const OTPVerification = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   heading_view: {
@@ -138,10 +141,11 @@ const styles = StyleSheet.create({
     borderColor: '#8D8D8D',
     padding: 10,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 25,
     width: 40,
     height: 60,
     borderRadius: 10,
+    fontFamily: 'arial',
   },
   err_msg: {
     color: 'red',

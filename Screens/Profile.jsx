@@ -3,28 +3,49 @@ import {Avatar, IconButton} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
 import {HeadingText, SomeText} from '../component/Text_component';
 import {ActiveBtn} from '../component/CustomBtn';
-import {primary} from '../config/themeConfig';
 import {useSelector} from 'react-redux';
-
-const profile_screen_route = [
-  {
-    name: 'My Projects',
-  },
-  {
-    name: 'Join a Team',
-  },
-  {
-    name: 'Settings',
-  },
-  {
-    name: 'My Task',
-  },
-];
+import {useNavigation} from '@react-navigation/native';
 
 export const Profile = () => {
   const store = useSelector(store => store.auth);
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {username, full_name, email} = store.profile;
   const {container, center, edit_btn, aligning, aligning_2} = styles;
+  const navigation = useNavigation();
+
+  const profile_task_details = [
+    {
+      icon: 'clock-outline',
+      quantity: '5',
+      text: 'On Going',
+    },
+    {
+      icon: 'sticker-check-outline',
+      quantity: '25',
+      text: 'Total Complete',
+    },
+  ];
+
+  const profile_screen_route = [
+    {
+      name: 'My Projects',
+      // onPress: () => console.log('My Projects Screens'),
+      onPress: () => navigation.navigate('Projects'),
+    },
+    {
+      name: 'Join a Team',
+      onPress: () => console.log('Join a Team Screens'),
+    },
+    {
+      name: 'Settings',
+      onPress: () => navigation.navigate('Settings'),
+    },
+    {
+      name: 'My Task',
+      onPress: () => console.log('My Task Screens'),
+    },
+  ];
+
   return (
     <>
       <AppBar
@@ -32,7 +53,7 @@ export const Profile = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <View style={[container]}>
+      <View style={[container, {backgroundColor}]}>
         <View style={[center, {gap: 5}]}>
           <Avatar.Image
             size={100}
@@ -43,44 +64,41 @@ export const Profile = () => {
           <View style={[center]}>
             <HeadingText text={full_name} />
             <SomeText text={username} />
-            <View style={[edit_btn]}>
+            <View style={[edit_btn, {borderColor: primary}]}>
               <ActiveBtn text="Edit" />
             </View>
           </View>
         </View>
 
         <View style={[aligning]}>
-          <View style={[center]}>
-            <IconButton
-              icon="clock-outline"
-              size={25}
-              style={{position: 'relative', top: 10}}
-              onPress={() => console.log('Pressed')}
-            />
-            <HeadingText text={'5'} />
-            <SomeText text={'On Going'} />
-          </View>
-
-          <View style={[center]}>
-            <IconButton
-              icon="sticker-check-outline"
-              size={25}
-              style={{position: 'relative', top: 10}}
-              onPress={() => console.log('Pressed')}
-            />
-            <HeadingText text={'25'} />
-            <SomeText text={'Total Complete'} />
-          </View>
+          {profile_task_details.map(({icon, quantity, text}, i) => (
+            <View style={[center]} key={i}>
+              <IconButton
+                icon={icon}
+                size={25}
+                iconColor={color}
+                style={{position: 'relative', top: 10}}
+                onPress={() => console.log('Pressed')}
+              />
+              <HeadingText text={quantity} />
+              <SomeText text={text} />
+            </View>
+          ))}
         </View>
 
-        {profile_screen_route.map(({name}, i) => (
+        {profile_screen_route.map(({name, onPress}, i) => (
           <View style={[aligning_2]} key={i}>
-            <HeadingText text={name} myStyle={{fontSize: 17}} />
+            <HeadingText
+              onPress={onPress}
+              text={name}
+              myStyle={{fontSize: 17}}
+            />
             <IconButton
               icon="chevron-right"
               size={30}
+              iconColor={color}
               style={{left: 10}}
-              onPress={() => console.log('Pressed')}
+              onPress={onPress}
             />
           </View>
         ))}
@@ -92,7 +110,6 @@ export const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   center: {
@@ -102,7 +119,6 @@ const styles = StyleSheet.create({
   edit_btn: {
     borderWidth: 1,
     borderRadius: 25,
-    borderColor: primary,
     marginTop: 5,
   },
   aligning: {

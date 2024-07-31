@@ -1,38 +1,32 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 
 const styles = StyleSheet.create({
   fontFamily: {
     fontFamily: 'arial',
-  },
-  input: {
-    width: '85%',
-    padding: 0,
-    fontSize: 15,
-  },
-  input_view: {
-    marginVertical: 20,
-    width: '100%',
-    alignItems: 'center',
-    gap: 5,
+    fontWeight: 'bold',
   },
 });
-const {fontFamily, input_view, input} = styles;
+const {fontFamily} = styles;
 
 const Custom_input = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   return (
     <TextInput
       mode="outlined"
       theme={{
         roundness: 15, // This sets the roundness of the TextInput
         colors: {
-          primary: 'blue', // You can customize the primary color if needed
+          primary, // You can customize the primary color if needed
         },
       }}
-      contentStyle={{...fontFamily, fontWeight: 'bold'}}
-      right={<TextInput.Icon icon={props.icon} />}
+      placeholderTextColor={color}
+      contentStyle={[fontFamily]}
+      right={props.icon && <TextInput.Icon icon={props.icon} color={color} />}
       {...props}
+      style={{backgroundColor, color, ...props.style}}
     />
   );
 };
@@ -40,6 +34,7 @@ const Custom_input = props => {
 const Password_input = props => {
   const [visibility, setVisibility] = useState(true);
   const toggle = () => setVisibility(pre => !pre);
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
 
   return (
     <TextInput
@@ -48,17 +43,19 @@ const Password_input = props => {
       theme={{
         roundness: 15, // This sets the roundness of the TextInput
         colors: {
-          primary: 'blue', // You can customize the primary color if needed
+          primary, // You can customize the primary color if needed
         },
       }}
       placeholder={'Enter your password'}
-      contentStyle={{...fontFamily, fontWeight: 'bold'}}
+      placeholderTextColor={color}
+      contentStyle={[fontFamily]}
       {...props}
+      style={{backgroundColor, color, ...props.style}}
       right={
         visibility ? (
-          <TextInput.Icon icon="eye" onPress={toggle} />
+          <TextInput.Icon icon="eye" color={color} onPress={toggle} />
         ) : (
-          <TextInput.Icon icon="eye-off" onPress={toggle} />
+          <TextInput.Icon icon="eye-off" color={color} onPress={toggle} />
         )
       }
     />

@@ -5,8 +5,10 @@ import {Heading, HeadingText} from '../component/Text_component';
 import {StyleSheet} from 'react-native';
 import {TaskCard} from '../component/TaskCard';
 import {ProgressCard} from './ProgressCard';
+import {useSelector} from 'react-redux';
 
 export const Home = () => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const daysOfWeek = [
     'Sunday',
     'Monday',
@@ -31,7 +33,7 @@ export const Home = () => {
   } = styles;
   return (
     <>
-      <View style={[bgColor]}>
+      <View style={{backgroundColor}}>
         <AppBar
           title={`${day}, ${date}`}
           leftIcon={'table'}
@@ -67,6 +69,7 @@ export const Home = () => {
           <HeadingText text={'In Progress'} />
           <IconButton
             icon="chevron-right"
+            iconColor={color}
             size={30}
             style={{left: 10}}
             onPress={() => console.log('Pressed')}
@@ -74,7 +77,7 @@ export const Home = () => {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={[container]} style={[bgColor]}>
+      <ScrollView contentContainerStyle={[container]} style={{backgroundColor}}>
         <ProgressCard
           title="Productivity Mobile App"
           heading="Create Details Booking"

@@ -2,9 +2,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {SomeText} from './Text_component';
 import {Avatar, ProgressBar} from 'react-native-paper';
-import {primary} from '../config/themeConfig';
+import {useSelector} from 'react-redux';
 
 export const ProjectsCard = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
   const {progress_num, progress_str, heading, title} = props;
   const {avatar_view, aligning, container} = styles;
   return (

@@ -16,11 +16,16 @@ import {islogged_action, profile_action} from '../../store/slices/auth_slice';
 import {NewPassword} from '../../Screens/NewPassword';
 import {Create_team} from '../../Screens/Create_team';
 import {Add_task} from '../../Screens/Add_task';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {_id_name, dark_mode_key} from '../../utils/constants';
+import {Settings} from '../../Screens/Setting';
+import {set_dark_mode} from '../../store/slices/theme_slice';
 
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
-  const [initialRouteName, setInitialRouteName] = useState('Welcome');
+  // const [initialRouteName, setInitialRouteName] = useState('Welcome');
   const {islogged} = useSelector(store => store.auth);
+  // const {dark_mode} = useSelector(store => store.theme);
   const dispatch = useDispatch();
 
   const splashOffHandle = () =>
@@ -29,6 +34,11 @@ const App_navigation = () => {
     }, 3000);
 
   const auth_check_handle = async () => {
+    let value = await AsyncStorage.getItem(dark_mode_key);
+    value = JSON.parse(value);
+    // console.log('value', value);
+    dispatch(set_dark_mode(value));
+
     try {
       const res = await api_auth_check();
       console.log('res', res.data);
@@ -36,6 +46,7 @@ const App_navigation = () => {
       dispatch(islogged_action(true));
       splashOffHandle();
     } catch (error) {
+      await AsyncStorage.removeItem(_id_name);
       splashOffHandle();
       console.log('error', error);
     }
@@ -50,9 +61,10 @@ const App_navigation = () => {
   const stackScreenArray = islogged
     ? [
         {name: 'BottomTabs', component: BottomTabs},
-        {name: 'NewPassword', component: NewPassword},
         {name: 'Create_team', component: Create_team},
         {name: 'Add_task', component: Add_task},
+        {name: 'Settings', component: Settings},
+        {name: 'NewPassword', component: NewPassword},
       ]
     : [
         {name: 'Welcome', component: Welcome},
@@ -62,7 +74,6 @@ const App_navigation = () => {
         {name: 'SignUp', component: SignUp},
         {name: 'LogIn', component: LogIn},
         {name: 'OTPVerification', component: OTPVerification},
-        {name: 'NewPassword', component: NewPassword},
       ];
 
   return splash_screen ? (

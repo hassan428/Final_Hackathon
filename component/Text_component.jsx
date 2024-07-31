@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {primary} from '../config/themeConfig';
+import {useSelector} from 'react-redux';
 
 const styles = StyleSheet.create({
   heading: {
@@ -19,40 +19,51 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 30,
     width: '70%',
-    color: 'black',
   },
   text_style: {
     marginLeft: 20,
     fontSize: 15,
-    color: primary,
   },
 });
 
 const {heading, fontFamily, heading_text, text_style, title_style} = styles;
 
-const Heading = ({myStyle, text}) => {
+const Heading = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
   return (
-    <Text style={[heading, fontFamily, {color: 'black', ...myStyle}]}>
-      {text}
+    <Text style={[heading, fontFamily, {color, ...props.myStyle}]} {...props}>
+      {props.text}
     </Text>
   );
 };
 
-const HeadingText = ({myStyle, text}) => {
-  return <Text style={[heading_text, fontFamily, {...myStyle}]}>{text}</Text>;
+const HeadingText = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
+  return (
+    <Text
+      style={[heading_text, fontFamily, {color, ...props.myStyle}]}
+      {...props}>
+      {props.text}
+    </Text>
+  );
 };
 
 const SomeText = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
+
   return (
-    <Text style={[fontFamily, {...props.myStyle}]} {...props}>
+    <Text style={[fontFamily, {color, ...props.myStyle}]} {...props}>
       {props.text}
     </Text>
   );
 };
 
 const Start_screen_title = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   return (
-    <Text style={[title_style, fontFamily]} {...props}>
+    <Text style={[title_style, fontFamily, {color}]} {...props}>
       {props.firstText} <Text style={{color: primary}}>{props.colorText}</Text>{' '}
       {props.lastText}
     </Text>
@@ -60,8 +71,9 @@ const Start_screen_title = props => {
 };
 
 const Start_screen_text = props => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   return (
-    <Text style={[fontFamily, text_style]} {...props}>
+    <Text style={[fontFamily, text_style, {color: primary}]} {...props}>
       {props.text}
     </Text>
   );

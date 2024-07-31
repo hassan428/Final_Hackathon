@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,24 +8,27 @@ import {Home} from './Home';
 import {Projects} from './Projects';
 import {Chat} from './Chat';
 import {Profile} from './Profile';
-import {primary} from '../config/themeConfig';
 import {MoreTools} from '../component/MoreTools';
+import {useSelector} from 'react-redux';
 
 export const BottomTabs = () => {
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
   // const {params} = useRoute();
   const [isAddMode, setIsAddMode] = useState(false);
 
   const AddButton = props => (
-    <TouchableOpacity
-      {...props}
-      style={styles.addButton}
-      onPress={() => setIsAddMode(!isAddMode)}>
-      <MaterialIcons
-        name={!isAddMode ? 'add' : 'close'}
-        size={25}
-        color="white"
-      />
-    </TouchableOpacity>
+    <View style={[{backgroundColor}]}>
+      <TouchableOpacity
+        {...props}
+        style={[styles.addButton, {backgroundColor: primary}]}
+        onPress={() => setIsAddMode(!isAddMode)}>
+        <MaterialIcons
+          name={!isAddMode ? 'add' : 'close'}
+          size={25}
+          color="white"
+        />
+      </TouchableOpacity>
+    </View>
   );
 
   const tabScreenArray = [
@@ -112,7 +115,9 @@ export const BottomTabs = () => {
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: primary,
-          tabBarInactiveTintColor: 'gray',
+          tabBarInactiveTintColor: color,
+          tabBarActiveBackgroundColor: backgroundColor,
+          tabBarInactiveBackgroundColor: backgroundColor,
           tabBarLabelStyle: {
             fontFamily: 'arial',
             fontSize: 13,

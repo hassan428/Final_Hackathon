@@ -6,13 +6,16 @@ import {Password_input} from '../component/Custom_input';
 import {useNavigation} from '@react-navigation/native';
 import {AppBar} from '../component/AppBar';
 import {api_login} from '../config/Apis';
+import {useSelector} from 'react-redux';
 
 export const NewPassword = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
   const [btn_loading, set_btn_loading] = useState(false);
   const navigation = useNavigation();
-
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
   const inputValue = (text, id) => {
     text = text.split(' ').join('');
     setData({...data, [id]: text});
@@ -55,7 +58,7 @@ export const NewPassword = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <ScrollView style={[scroll_view]}>
+      <ScrollView style={[scroll_view, {backgroundColor}]}>
         <View style={[heading_view]}>
           <Heading text="Change Password" />
 
@@ -119,7 +122,6 @@ export const NewPassword = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   heading_view: {

@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import {IconButton} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
 import {api_signup} from '../config/Apis';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {profile_action} from '../store/slices/auth_slice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {_id_name} from '../utils/constants';
@@ -21,7 +21,9 @@ export const SignUp = () => {
   const navigation = useNavigation();
   const [loading, set_loading] = useState(false);
   const dispatch = useDispatch();
-
+  const {primary, backgroundColor, color, dark_mode} = useSelector(
+    store => store.theme,
+  );
   const loadingOffHandle = () =>
     setTimeout(() => {
       set_loading(false);
@@ -107,7 +109,7 @@ export const SignUp = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
-      <ScrollView style={[scroll_view]}>
+      <ScrollView style={[scroll_view, {backgroundColor}]}>
         <View style={[heading_view]}>
           <Heading text="Create Account" />
 
@@ -198,15 +200,25 @@ export const SignUp = () => {
         />
 
         <View style={[navigate_view, {marginBottom: 5}]}>
-          <IconButton icon="apple" size={30} onPress={log_in_with_github} />
+          <IconButton
+            icon="apple"
+            iconColor={color}
+            size={30}
+            onPress={log_in_with_github}
+          />
 
-          <IconButton icon="google" size={30} onPress={log_in_with_google} />
+          <IconButton
+            icon="google"
+            iconColor={color}
+            size={30}
+            onPress={log_in_with_google}
+          />
         </View>
 
         <View style={[navigate_view, {marginBottom: 30}]}>
           <SomeText text={'Have an Acount? '} />
           <SomeText
-            myStyle={{color: '#0059FF'}}
+            myStyle={{color: primary}}
             text={'Sign In'}
             onPress={() => navigation.navigate('LogIn')}
           />
@@ -219,7 +231,6 @@ export const SignUp = () => {
 const styles = StyleSheet.create({
   scroll_view: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   heading_view: {

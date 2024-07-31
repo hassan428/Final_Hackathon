@@ -18,3 +18,7 @@ export const api_verify_otp = post_data => {
 export const api_send_otp = post_data => {
   return apiHandle.post('/send_otp', post_data);
 };
+
+export const api_create_team = post_data => {
+  return apiHandle.post('/create_team', post_data);
+};

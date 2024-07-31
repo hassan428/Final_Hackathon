@@ -3,9 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import {Modal, Portal, IconButton} from 'react-native-paper';
 import {SomeText} from './Text_component';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 export const MoreTools = ({visible, Component, onDismiss}) => {
   const navigation = useNavigation();
+  const {primary, backgroundColor, color} = useSelector(store => store.theme);
 
   const tools_arr = [
     {
@@ -33,11 +35,19 @@ export const MoreTools = ({visible, Component, onDismiss}) => {
   const {modal_style, element_container, container, close_btn_style} = styles;
   return (
     <Portal>
-      <Modal onDismiss={onDismiss} visible={visible} style={[modal_style]}>
+      <Modal
+        onDismiss={onDismiss}
+        visible={visible}
+        style={[modal_style, {backgroundColor}]}>
         <View style={[container]}>
           {tools_arr.map(({icon, onPress, text}, i) => (
             <View style={[element_container]} key={i}>
-              <IconButton icon={icon} size={25} onPress={onPress} />
+              <IconButton
+                iconColor={color}
+                icon={icon}
+                size={25}
+                onPress={onPress}
+              />
               <SomeText
                 text={text}
                 myStyle={{fontSize: 18, fontWeight: 'bold'}}
@@ -60,7 +70,6 @@ export const MoreTools = ({visible, Component, onDismiss}) => {
 const styles = StyleSheet.create({
   modal_style: {
     justifyContent: 'flex-end',
-    backgroundColor: 'white',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     height: '50%',
