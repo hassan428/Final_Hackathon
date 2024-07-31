@@ -12,6 +12,7 @@ const { non_verify_email } = require("../middleware/verifiy_email");
 const { otpVerifyMiddleWare } = require("../middleware/otpVerifyMiddleWare");
 const { send_otp } = require("../controllers/send_otp");
 const { set_new_password } = require("../controllers/set_new_password");
+const { create_team } = require("../controllers/team_controllers");
 
 const router = express.Router();
 router.post("/signup", non_verify_email, signUp);
@@ -21,6 +22,7 @@ router.post("/send_otp", send_otp);
 
 router.get("/auth_check", auth_check, send_data);
 router.post("/set_new_password", set_new_password);
+router.post("/create_team", create_team);
 // router.get("/logout", logOut);
 // router.post("/createpost", auth_check, create_post);
 
