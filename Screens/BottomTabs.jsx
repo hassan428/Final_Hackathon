@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
   addButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: primary,
     borderRadius: 30,
     width: 60,
     height: 60,
