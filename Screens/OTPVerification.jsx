@@ -52,7 +52,8 @@ export const OTPVerification = () => {
           email: email_param,
         });
         set_loading(true);
-        await AsyncStorage.setItem(token_name, res.data.token);
+        res.data.token &&
+          (await AsyncStorage.setItem(token_name, res.data.token));
         dispatch(profile_action(res.data.data));
         dispatch(islogged_action(true));
         // navigation.navigate('BottomTabs');

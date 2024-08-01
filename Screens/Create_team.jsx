@@ -103,9 +103,9 @@ export const Create_team = () => {
               <IconButton
                 onPress={openGalleryHandle}
                 icon="pencil-circle"
-                color={'black'}
+                iconColor={color}
                 size={30}
-                style={{position: 'absolute', left: 170, top: 50}}
+                style={{position: 'absolute', left: 175, top: 50}}
               />
             </>
           ) : (

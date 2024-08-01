@@ -32,7 +32,7 @@ const Splash_screen = () => {
   const {center, splash_view} = styles;
 
   return (
-    <View style={[splash_view, center, {backgroundColor}]}>
+    <View style={[splash_view, center, {backgroundColor: primary}]}>
       <Animated.View
         style={[
           center,
@@ -44,7 +44,7 @@ const Splash_screen = () => {
           resizeMode="contain"
           source={require('../assets/splash_logo.png')}
         />
-        <Logo fontSize={40} logoColor={dark_mode ? color : primary} />
+        <Logo fontSize={40} logoColor={'#E9F1FF'} />
       </Animated.View>
     </View>
   );

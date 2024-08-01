@@ -23,7 +23,7 @@ const Custom_input = props => {
         },
       }}
       placeholderTextColor={color}
-      contentStyle={[fontFamily]}
+      contentStyle={[fontFamily, {color}]}
       right={props.icon && <TextInput.Icon icon={props.icon} color={color} />}
       {...props}
       style={{backgroundColor, color, ...props.style}}
@@ -48,7 +48,7 @@ const Password_input = props => {
       }}
       placeholder={'Enter your password'}
       placeholderTextColor={color}
-      contentStyle={[fontFamily]}
+      contentStyle={[fontFamily, {color}]}
       {...props}
       style={{backgroundColor, color, ...props.style}}
       right={

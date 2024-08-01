@@ -65,7 +65,10 @@ export const Profile = () => {
             <HeadingText text={full_name} />
             <SomeText text={username} />
             <View style={[edit_btn, {borderColor: primary}]}>
-              <ActiveBtn text="Edit" />
+              <ActiveBtn
+                text="Edit"
+                onPress={() => navigation.navigate('Edit_profile')}
+              />
             </View>
           </View>
         </View>

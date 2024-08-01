@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {_id_name, dark_mode_key} from '../../utils/constants';
 import {Settings} from '../../Screens/Setting';
 import {set_dark_mode} from '../../store/slices/theme_slice';
+import {Edit_profile} from '../../Screens/Edit_profile';
 
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
@@ -63,8 +64,10 @@ const App_navigation = () => {
         {name: 'BottomTabs', component: BottomTabs},
         {name: 'Create_team', component: Create_team},
         {name: 'Add_task', component: Add_task},
+        {name: 'Edit_profile', component: Edit_profile},
         {name: 'Settings', component: Settings},
         {name: 'NewPassword', component: NewPassword},
+        {name: 'OTPVerification', component: OTPVerification},
       ]
     : [
         {name: 'Welcome', component: Welcome},

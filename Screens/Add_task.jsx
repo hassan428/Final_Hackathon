@@ -92,7 +92,7 @@ export const Add_task = () => {
       label: 'Running',
     },
     {
-      label: 'ongoing',
+      label: 'Ongoing',
     },
   ];
 
