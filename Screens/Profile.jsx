@@ -62,8 +62,8 @@ export const Profile = () => {
             }}
           />
           <View style={[center]}>
-            <HeadingText text={full_name} />
-            <SomeText text={username} />
+            <HeadingText text={full_name} myStyle={{textAlign: 'center'}} />
+            <SomeText text={username} myStyle={{textAlign: 'center'}} />
             <View style={[edit_btn, {borderColor: primary}]}>
               <ActiveBtn
                 text="Edit"

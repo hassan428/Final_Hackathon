@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {Avatar, Button, IconButton} from 'react-native-paper';
+import {Avatar, IconButton} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
 import {SomeText} from '../component/Text_component';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,9 +9,11 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {Custom_input} from '../component/Custom_input';
 import {validateEmail} from '../utils/validate_email';
 import {api_update_profile} from '../config/Apis';
-import {profile_action} from '../store/slices/auth_slice';
+import {islogged_action, profile_action} from '../store/slices/auth_slice';
 import {Alert_dialog} from '../component/Alert_dialog';
-import {ActiveBtn} from '../component/CustomBtn';
+import {Submit_btn} from '../component/CustomBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {token_name} from '../utils/constants';
 
 export const Edit_profile = () => {
   const {profile} = useSelector(store => store.auth);
@@ -22,6 +24,8 @@ export const Edit_profile = () => {
   const [errorMsg, setErrorMsg] = useState({});
   const [data, setData] = useState({...profile});
   const [showAlert, setShowAlert] = useState(false);
+  const [alert_data, set_alert_data] = useState({});
+
   const openGalleryHandle = async () => {
     const {assets, didCancel, errorCode, errorMessage} =
       await launchImageLibrary({
@@ -32,9 +36,10 @@ export const Edit_profile = () => {
     } else if (errorCode) {
       console.log('error: ', errorCode, errorMessage);
     } else {
-      setData({...data, logo_url: assets[0].uri});
+      setData({...data, avatar_url: assets[0].uri});
     }
   };
+
   const inputValue = (text, id) => {
     setErrorMsg({[id]: ''});
 
@@ -56,13 +61,16 @@ export const Edit_profile = () => {
       }, {});
 
       if (Object.keys(filteredData).length > 0) {
-        const res = await api_update_profile({...filteredData, _id: '123456'});
+        const res = await api_update_profile({...filteredData, _id});
         console.log('res', res.data.data);
         dispatch(profile_action(res.data.data));
+        navigation.navigate('Home');
       } else {
+        navigation.navigate('Home');
         console.log('No changes made');
       }
     } catch (err) {
+      set_alert_data({showAlert: false});
       console.log('err', err.response.data);
       if (err.response.data) {
         const {message, success} = err.response.data;
@@ -78,6 +86,40 @@ export const Edit_profile = () => {
       } else {
         setErrorMsg({other: err.message});
       }
+    }
+  };
+
+  const logout_handle = async () => {
+    try {
+      await AsyncStorage.removeItem(token_name);
+      dispatch(islogged_action(false));
+      navigation.navigate('LogIn');
+    } catch (error) {
+      set_alert_data({showAlert: false});
+    }
+  };
+
+  const show_alert_handle = value => {
+    if (value == 'LogOut') {
+      set_alert_data({
+        title: 'LogOut',
+        text: 'Are you sure you want to logOut?',
+        btn_one: 'Yes, LogOut',
+        btn_one_handle: logout_handle,
+        btn_two: 'No, Stayed',
+        btn_two_handle: () => set_alert_data({showAlert: false}),
+        showAlert: true,
+      });
+    } else {
+      set_alert_data({
+        title: 'Update Profile',
+        text: 'Do you want to update your profile?',
+        btn_one: 'Yes, Update',
+        btn_one_handle: submit_handle,
+        btn_two: 'No',
+        btn_two_handle: () => set_alert_data({showAlert: false}),
+        showAlert: true,
+      });
     }
   };
 
@@ -117,7 +159,7 @@ export const Edit_profile = () => {
     },
   ];
 
-  const {container, center, some_text, err_msg} = styles;
+  const {container, center, some_text, err_msg, scrollView_container} = styles;
   return (
     <>
       <AppBar
@@ -125,31 +167,29 @@ export const Edit_profile = () => {
         leftIcon={'chevron-left'}
         rightText={'Save'}
         leftIconHandle={() => navigation.goBack()}
-        rightIconHandle={() => setShowAlert(true)}
+        rightIconHandle={() => show_alert_handle('update')}
       />
       <Alert_dialog
-        showAlert={showAlert}
-        title={'Update Profile'}
-        text={'Do you want to update your profile?'}
-        btn={
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <ActiveBtn onPress={() => setShowAlert(false)} text={'No'} />
-            <ActiveBtn onPress={submit_handle} text={'Yes'} />
-          </View>
-        }
-        hideDialog={() => setShowAlert(false)}
+        {...alert_data}
+        hideDialog={() => set_alert_data({showAlert: false})}
       />
       <View style={[container, {backgroundColor}]}>
         <View style={[center, {gap: 5}]}>
-          <Avatar.Image
-            size={100}
-            source={{
-              uri: 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-            }}
-          />
+          {data.avatar_url ? (
+            <Avatar.Image
+              size={100}
+              source={{
+                uri: data.avatar_url,
+              }}
+            />
+          ) : (
+            <Avatar.Image
+              size={100}
+              source={{
+                uri: 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
+              }}
+            />
+          )}
           <IconButton
             onPress={openGalleryHandle}
             icon="pencil-circle"
@@ -161,7 +201,7 @@ export const Edit_profile = () => {
 
         {errorMsg.other && <SomeText myStyle={err_msg} text={errorMsg.other} />}
 
-        <ScrollView>
+        <ScrollView contentContainerStyle={[scrollView_container]}>
           {render_input_field.map(
             (
               {id, name, defaultValue, keyboardType, value, error, disabled},
@@ -184,6 +224,11 @@ export const Edit_profile = () => {
             ),
           )}
         </ScrollView>
+
+        <Submit_btn
+          text={'LogOut'}
+          onPress={() => show_alert_handle('LogOut')}
+        />
       </View>
     </>
   );
@@ -193,6 +238,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  scrollView_container: {
+    // flex: 1,
+    marginVertical: 15,
+    gap: 20,
   },
   center: {
     justifyContent: 'center',

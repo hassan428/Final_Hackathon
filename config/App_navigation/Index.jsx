@@ -24,9 +24,7 @@ import {Edit_profile} from '../../Screens/Edit_profile';
 
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
-  // const [initialRouteName, setInitialRouteName] = useState('Welcome');
   const {islogged} = useSelector(store => store.auth);
-  // const {dark_mode} = useSelector(store => store.theme);
   const dispatch = useDispatch();
 
   const splashOffHandle = () =>

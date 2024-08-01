@@ -31,7 +31,7 @@ export const Add_task = () => {
 
   const submit_handle = async () => {
     // setData({...data, board});
-    // console.log('data', data);
+    console.log('data', data);
   };
 
   const months = [

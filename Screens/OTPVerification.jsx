@@ -52,12 +52,12 @@ export const OTPVerification = () => {
           email: email_param,
         });
         set_loading(true);
-        res.data.token &&
-          (await AsyncStorage.setItem(token_name, res.data.token));
+
+        await AsyncStorage.setItem(token_name, res.data.token);
         dispatch(profile_action(res.data.data));
         dispatch(islogged_action(true));
-        // navigation.navigate('BottomTabs');
-        console.log('res', res.data);
+        navigation.navigate('BottomTabs');
+        // console.log('res', res.data);
       }
     } catch (err) {
       set_btn_loading(false);
