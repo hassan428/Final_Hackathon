@@ -5,8 +5,10 @@ const { email_send } = require("../services/nodemailer_service");
 
 const send_otp = async (req, res, next) => {
   try {
-    const { email } = req.body;
-    const find_user = await user_model.findOne({ email });
+    const { email, _id: id } = req.body;
+    const find_user = id
+      ? await user_model.findById(id)
+      : await user_model.findOne({ email });
     if (!find_user) {
       next({ status: 404, message: "User not found" });
     }
@@ -24,12 +26,10 @@ const send_otp = async (req, res, next) => {
       await code_model.deleteOne({ user_id: _id });
       throw err;
     });
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "The OTP has been sent to your email address",
-      });
+    return res.status(200).json({
+      success: true,
+      message: "The OTP has been sent to your email address",
+    });
   } catch (error) {
     next(error);
   }

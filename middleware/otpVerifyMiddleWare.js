@@ -32,7 +32,7 @@ const otpVerifyMiddleWare = async (req, res, next) => {
       }
       next({ message: "OTP is not correct! try One more time", status: 400 });
     }
-    req.user = { otp, code, find_user, otpFound };
+    req.user = { ...req.body, otp, code, find_user, otpFound };
     next();
   } catch (error) {
     next(error);
