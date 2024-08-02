@@ -2,7 +2,6 @@ const Team = require("../models_schema/team_model");
 
 const create_team = async (req, res, next) => {
   try {
-    const { team_name, teamType } = req.body;
     const team = await Team.create(req.body);
     res.status(201).json({ success: true, team });
   } catch (err) {
@@ -50,4 +49,4 @@ const create_team = async (req, res, next) => {
 //   }
 // };
 
-module.exports = {create_team};
+module.exports = { create_team };

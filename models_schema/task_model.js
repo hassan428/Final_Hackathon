@@ -1,29 +1,34 @@
 const mongoose = require("mongoose");
 
-const courseSchema = mongoose.Schema(
+const task_schema = mongoose.Schema(
   {
-    title: {
+    task_name: {
       type: String,
-      require: true,
+      required: true,
     },
-    description: {
+    date: {
+      type: Date,
+      required: true,
+    },
+    start_time: {
       type: String,
-      require: true,
+      required: true,
     },
-    taskStatus: {
+    end_time: {
       type: String,
-      enum: ["Pending", "Completed"],
-      default: "Pending",
+      required: true,
     },
-    team: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
+    board: {
+      type: String,
+      enum: ["Urgent", "Running", "Ongoing"],
+      default: "Running",
     },
+    team: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
   },
   {
     timestamps: true,
   }
 );
-const courseModel = mongoose.model("/courses", courseSchema);
+const task_model = mongoose.model("task", task_schema);
 
-module.exports = courseModel;
+module.exports = task_model;

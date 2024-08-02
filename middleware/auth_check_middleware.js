@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const user_model = require("../models_schema/user_profile");
+const Team = require("../models_schema/team_model");
+const task_model = require("../models_schema/task_model");
 const { JWT_SECRET } = process.env;
 
 const auth_check = async (req, res, next) => {
@@ -21,18 +23,33 @@ const auth_check = async (req, res, next) => {
       next({ status: 404, message: "User not found" });
     }
 
-    // const find_other_user = await user_model
-    //   .find({
-    //     bloodGroup: find_user.bloodGroup,
-    //     _id: { $ne: find_user._id },
-    //     isVerified: true,
-    //   })
-    //   .select("-password");
+    const find_other_user = await user_model
+      .find({
+        _id: { $ne: find_user._id },
+        isVerified: true,
+      })
+      .select("-password");
 
     // console.log(find_other_user);
 
+    const team = await Team.find({
+      members: find_user._id,
+    });
+
+    // console.log("team", team);
+    const teamIds = team.map((t) => t._id);
+
+    const task = await task_model.find({
+      team: { $in: teamIds },
+    });
+
+    task.reverse();
+
+    // console.log("task", task);
     req.user = find_user;
-    // req.other_user = find_other_user;
+    req.other_user = find_other_user;
+    req.team = team;
+    req.task = task;
     next();
   } catch (error) {
     if (error.message == "jwt expired") {

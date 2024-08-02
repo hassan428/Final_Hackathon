@@ -2,9 +2,21 @@ const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema(
   {
-    team_name: { type: String, required: true },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "user_profiles" }],
-    teamType: { type: String, required: true },
+    team_name: {
+      type: String,
+      required: true,
+    },
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user_profiles",
+      },
+    ],
+    teamType: {
+      type: String,
+      enum: ["Private", "Public", "Secret"],
+      default: "Private",
+    },
     // courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "/courses" }],
     // messages: [
     //   {

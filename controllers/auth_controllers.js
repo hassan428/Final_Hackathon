@@ -83,17 +83,6 @@ const logIn = async (req, res, next) => {
   }
 };
 
-// const logOut = async (req, res, next) => {
-//   try {
-//     res.cookie(COOKIE_AUTH_NAME, "empty", { maxAge: 5000 });
-//     return res.status(200).json({
-//       success: true,
-//       message: "Logout successful. Thank you for using our service!",
-//     });
-//   } catch (error) {}
-//   next(error);
-// };
-
 const verify_otp = async (req, res, next) => {
   try {
     const { otp, code, find_user, otpFound } = req.user;
