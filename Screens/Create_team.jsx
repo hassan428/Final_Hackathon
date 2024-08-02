@@ -8,23 +8,38 @@ import {Avatar, Badge, Icon, IconButton} from 'react-native-paper';
 import {ActiveBtn, Submit_btn} from '../component/CustomBtn';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {api_create_team} from '../config/Apis';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {cut_member_action} from '../store/slices/add_slice';
+import {create_team_action} from '../store/slices/team_slice';
 
 export const Create_team = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [data, setData] = useState({teamType: 'Private'});
+  const [btn_loading, set_btn_loading] = useState(false);
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
-  // const [errorMsg, setErrorMsg] = useState({});
+  const {other_user_profile, profile} = useSelector(store => store.auth);
+  const {member_id} = useSelector(store => store.add);
+  const filteredUsers = other_user_profile.filter(user =>
+    member_id.includes(user._id),
+  );
   const inputValue = (text, id) => {
     setData({...data, [id]: text});
   };
 
   const submit_handle = async () => {
     // console.log('data', data);
+    set_btn_loading(true);
     try {
-      const res = await api_create_team(data);
+      const res = await api_create_team({
+        ...data,
+        members: [...member_id, profile._id],
+      });
+      dispatch(create_team_action(res.data.team));
+      navigation.navigate('Chat');
       console.log('res', res.data);
     } catch (error) {
+      set_btn_loading(false);
       console.log('error', error.response.data);
     }
   };
@@ -43,24 +58,6 @@ export const Create_team = () => {
     }
   };
 
-  const team_member_array = [
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-  ];
-
   const type_detals = [
     {
       label: 'Private',
@@ -72,6 +69,8 @@ export const Create_team = () => {
       label: 'Secret',
     },
   ];
+  const avatar_uri =
+    'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png';
 
   const {
     container,
@@ -111,7 +110,6 @@ export const Create_team = () => {
           ) : (
             <IconButton
               size={70}
-              // icon={'progress-upload'}
               icon={'cloud-upload'}
               iconColor={primary}
               style={[icon_btn_style, {borderColor: primary}]}
@@ -136,24 +134,40 @@ export const Create_team = () => {
         <SomeText text="Team Member" myStyle={some_text} />
 
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
-          {team_member_array.map(({avatar_uri, name}, i) => (
-            <View style={{alignItems: 'center'}} key={i}>
+          {filteredUsers?.map(({username, _id}, i) => (
+            <View style={{alignItems: 'center', marginVertical: 10}} key={i}>
               <Avatar.Image
                 size={45}
                 source={{
                   uri: avatar_uri,
                 }}
               />
-              <SomeText text={name} />
+              <IconButton
+                onPress={() => dispatch(cut_member_action(_id))}
+                icon="close-circle"
+                iconColor={color}
+                size={20}
+                style={{
+                  position: 'absolute',
+                  bottom: 40,
+                  alignItems: 'flex-end',
+                }}
+              />
+              <SomeText text={username} />
             </View>
           ))}
-          <IconButton
-            size={30}
-            icon={'plus'}
-            iconColor={primary}
-            style={[icon_btn_style, {margin: 0, borderColor: primary}]}
-            onPress={() => console.log('first')}
-          />
+          {other_user_profile.length !== member_id.length && (
+            <IconButton
+              size={30}
+              icon={'plus'}
+              iconColor={primary}
+              style={[
+                icon_btn_style,
+                {borderColor: primary, marginVertical: 5},
+              ]}
+              onPress={() => navigation.navigate('Add_member')}
+            />
+          )}
         </ScrollView>
 
         <SomeText text="Type" myStyle={some_text} />
@@ -184,6 +198,8 @@ export const Create_team = () => {
 
         <Submit_btn
           text="Create Team"
+          loading={btn_loading}
+          disabled={btn_loading}
           myStyle={submit_btn_style}
           onPress={submit_handle}
         />

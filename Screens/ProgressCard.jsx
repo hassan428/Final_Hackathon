@@ -9,10 +9,10 @@ export const ProgressCard = props => {
   const {container} = styles;
   return (
     <View style={[container]}>
-      <View>
-        <SomeText text={title} />
+      <View style={{gap: 2}}>
         <SomeText text={heading} myStyle={{fontWeight: 900, fontSize: 15}} />
-        <SomeText text={time} />
+        <SomeText text={title} />
+        <SomeText text={time} myStyle={{fontSize: 12}} />
       </View>
       <Circular_progress size={50} strokeWidth={8} percentage={percentage} />
     </View>

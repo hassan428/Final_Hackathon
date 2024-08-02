@@ -5,17 +5,20 @@ import {Submit_btn} from '../component/CustomBtn';
 import {Password_input} from '../component/Custom_input';
 import {useNavigation} from '@react-navigation/native';
 import {AppBar} from '../component/AppBar';
-import {api_login} from '../config/Apis';
+import {api_login, api_set_new_password} from '../config/Apis';
 import {useSelector} from 'react-redux';
+import {Alert_dialog} from '../component/Alert_dialog';
 
 export const NewPassword = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
   const [btn_loading, set_btn_loading] = useState(false);
+  const [res_show, set_res_show] = useState({});
   const navigation = useNavigation();
   const {primary, backgroundColor, color, dark_mode} = useSelector(
     store => store.theme,
   );
+  const {_id} = useSelector(store => store.auth.profile);
   const inputValue = (text, id) => {
     text = text.split(' ').join('');
     setData({...data, [id]: text});
@@ -27,22 +30,28 @@ export const NewPassword = () => {
       const isEmpty = values.some(
         value => value === '' || value === null || value === undefined,
       );
-      if (isEmpty || values.length < 3) {
+      if (isEmpty || values?.length < 2) {
         setErrorMsg({other: 'Please fill all the fields'});
+      } else if (data.password !== data.confirm_password) {
+        setErrorMsg({confirm_password: 'Confirm Password does not match.'});
       } else {
         setErrorMsg('');
         set_btn_loading(true);
-        const res = await api_login(data);
+        const res = await api_set_new_password({...data, _id});
+        const {success, message} = res.data;
+        set_res_show({showAlert: success, text: message});
         console.log('res', res.data);
+        set_btn_loading(false);
       }
     } catch (err) {
       set_btn_loading(false);
-      const {message, success} = err.response.data;
-      if (message.includes('password')) {
+      const {message, success} = err.response?.data;
+      // console.log('message', err.response.data);
+      if (message?.includes('password')) {
         setErrorMsg({password: message});
+      } else {
+        setErrorMsg({other: message});
       }
-      console.log(message);
-      // setErrorMsg({other: message});
     }
   };
 
@@ -58,6 +67,22 @@ export const NewPassword = () => {
         leftIcon={'chevron-left'}
         leftIconHandle={() => navigation.goBack()}
       />
+      {res_show.showAlert && (
+        <Alert_dialog
+          hideDialog={() => {
+            set_res_show({showAlert: false});
+            navigation.goBack();
+          }}
+          btn_one_handle={() => {
+            set_res_show({showAlert: false});
+            navigation.goBack();
+          }}
+          showAlert={res_show.showAlert}
+          title={res_show.title || 'Updated'}
+          text={res_show.text}
+          btn_one={'ok'}
+        />
+      )}
       <ScrollView style={[scroll_view, {backgroundColor}]}>
         <View style={[heading_view]}>
           <Heading text="Change Password" />
@@ -71,24 +96,13 @@ export const NewPassword = () => {
         <View style={[input_view]}>
           <View>
             <Password_input
-              onChangeText={text => inputValue(text, 'old_password')}
-              value={data.old_password}
-              error={errorMsg.old_password && true}
-              placeholder={'Enter Old Password'}
-            />
-            {errorMsg.old_password && (
-              <SomeText myStyle={err_msg} text={errorMsg.old_password} />
-            )}
-          </View>
-          <View>
-            <Password_input
-              onChangeText={text => inputValue(text, 'new_password')}
-              value={data.new_password}
-              error={errorMsg.new_password && true}
+              onChangeText={text => inputValue(text, 'password')}
+              value={data.password}
+              error={errorMsg.password && true}
               placeholder={'Enter New Password'}
             />
-            {errorMsg.new_password && (
-              <SomeText myStyle={err_msg} text={errorMsg.new_password} />
+            {errorMsg.password && (
+              <SomeText myStyle={err_msg} text={errorMsg.password} />
             )}
           </View>
           <View>
@@ -102,12 +116,14 @@ export const NewPassword = () => {
               <SomeText myStyle={err_msg} text={errorMsg.confirm_password} />
             )}
           </View>
+          {errorMsg.other && (
+            <SomeText
+              myStyle={{...err_msg, textAlign: 'center'}}
+              text={errorMsg.other}
+            />
+          )}
         </View>
 
-        <SomeText
-          myStyle={{...err_msg, textAlign: 'center', marginBottom: 5}}
-          text={errorMsg.other}
-        />
         <Submit_btn
           loading={btn_loading}
           disabled={btn_loading}
@@ -129,7 +145,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   input_view: {
-    marginVertical: 25,
+    marginVertical: 20,
     gap: 30,
   },
   err_msg: {

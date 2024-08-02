@@ -10,33 +10,7 @@ import {useSelector} from 'react-redux';
 export const Projects = () => {
   const navigation = useNavigation();
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
-
-  const project_card_details = [
-    {
-      progress_num: 10 / 20,
-      progress_str: '10/20',
-      heading: 'Unity Dashboard',
-      title: 'Design',
-    },
-    {
-      progress_num: 12 / 20,
-      progress_str: '12/20',
-      heading: 'Instagram shots',
-      title: 'Marketing',
-    },
-    {
-      progress_num: 8 / 20,
-      progress_str: '8/20',
-      heading: 'Cubbles',
-      title: 'Design',
-    },
-    {
-      progress_num: 16 / 20,
-      progress_str: '16/20',
-      heading: 'Ui8 Platform',
-      title: 'Design',
-    },
-  ];
+  const {task} = useSelector(store => store.task);
 
   const {container, btn_view} = style;
   return (
@@ -58,8 +32,14 @@ export const Projects = () => {
         </View>
 
         <ScrollView>
-          {project_card_details.map((data, i) => (
-            <ProjectsCard {...data} key={i} />
+          {task.map(({task_name, board}, i) => (
+            <ProjectsCard
+              heading={task_name}
+              title={board}
+              progress_num={i / task.length}
+              progress_str={`${i}/${task.length}`}
+              key={i}
+            />
           ))}
         </ScrollView>
       </View>

@@ -10,17 +10,20 @@ import {useNavigation} from '@react-navigation/native';
 // } from '../utils/firebaseErrorMsg';
 import {IconButton, TextInput} from 'react-native-paper';
 import {AppBar} from '../component/AppBar';
-import {api_login, api_send_otp} from '../config/Apis';
+import {api_auth_check, api_login, api_send_otp} from '../config/Apis';
 import {validateEmail} from '../utils/validate_email';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   islogged_action,
   loading_action,
+  other_user_profile_action,
   profile_action,
 } from '../store/slices/auth_slice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {token_name} from '../utils/constants';
 import {Loading} from '../component/Loading';
+import {auth_check_team_action} from '../store/slices/team_slice';
+import {auth_check_task_action} from '../store/slices/task_slice';
 
 export const LogIn = () => {
   const [data, setData] = useState({});
@@ -55,10 +58,15 @@ export const LogIn = () => {
       } else {
         setErrorMsg('');
         set_btn_loading(true);
-        const res = await api_login(data);
+        const res_login = await api_login(data);
+        console.log('res_login', res_login.data);
         set_loading(true);
+        await AsyncStorage.setItem(token_name, res_login.data.token);
+        const res = await api_auth_check();
         dispatch(profile_action(res.data.data));
-        await AsyncStorage.setItem(token_name, res.data.token);
+        dispatch(other_user_profile_action(res.data.other_user));
+        dispatch(auth_check_team_action(res.data.team));
+        dispatch(auth_check_task_action(res.data.task));
         dispatch(islogged_action(true));
         console.log('res', res.data);
         set_loading(false);

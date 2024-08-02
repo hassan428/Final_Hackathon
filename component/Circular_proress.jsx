@@ -29,7 +29,7 @@ export const Circular_progress = ({size, strokeWidth, percentage}) => {
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
+          strokeLinecap="butt"
         />
       </Svg>
       <Text

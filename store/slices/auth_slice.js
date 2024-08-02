@@ -1,9 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  // uid: '',
   profile: null,
   islogged: false,
+  other_user_profile: null,
 };
 
 const auth_slice = createSlice({
@@ -15,11 +15,14 @@ const auth_slice = createSlice({
     },
 
     profile_action: (state, {payload}) => {
-      // console.log('action.payload.profile', payload);
       return {...state, profile: payload};
+    },
+    other_user_profile_action: (state, {payload}) => {
+      return {...state, other_user_profile: payload};
     },
   },
 });
 
-export const {islogged_action, profile_action} = auth_slice.actions;
+export const {islogged_action, profile_action, other_user_profile_action} =
+  auth_slice.actions;
 export default auth_slice.reducer;

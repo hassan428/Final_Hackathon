@@ -2,13 +2,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {Avatar, Badge, IconButton} from 'react-native-paper';
 import {SomeText} from './Text_component';
-import {useSelector} from 'react-redux';
 
-export const Chat_card = ({color, name, last_seen}) => {
-  // const {id} = useSelector(store => store.add_member);
-  // const {other_user_profile} = useSelector(store => store.auth);
-  // console.log('id', id);
-  // console.log('other_user_profile', other_user_profile);
+export const Member_card = ({color, username, email, add_member_handle}) => {
   const {aligning} = styles;
   return (
     <View
@@ -28,11 +23,16 @@ export const Chat_card = ({color, name, last_seen}) => {
             backgroundColor: 'green',
           }}></Badge>
         <View>
-          <SomeText text={name} myStyle={{fontWeight: 900, fontSize: 17}} />
-          <SomeText text={last_seen} />
+          <SomeText text={username} myStyle={{fontWeight: 900, fontSize: 17}} />
+          <SomeText text={email} />
         </View>
       </View>
-      <IconButton icon={'camera-outline'} iconColor={color} size={30} />
+      <IconButton
+        icon={'plus'}
+        onPress={add_member_handle}
+        iconColor={color}
+        size={30}
+      />
     </View>
   );
 };

@@ -6,9 +6,12 @@ import {StyleSheet} from 'react-native';
 import {TaskCard} from '../component/TaskCard';
 import {ProgressCard} from './ProgressCard';
 import {useSelector} from 'react-redux';
+import {formatDistanceToNow, formatDistanceToNowStrict} from 'date-fns';
 
 export const Home = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
+  const {task} = useSelector(store => store.task);
+
   const daysOfWeek = [
     'Sunday',
     'Monday',
@@ -21,14 +24,12 @@ export const Home = () => {
   const newDate = new Date();
   const date = newDate.getDate();
   const day = daysOfWeek[newDate.getDay()];
-  // console.log(newDate.getDate());
 
   const {
     container,
     scroll_view_horizontal,
     center,
     heading_view,
-    bgColor,
     progress_view,
   } = styles;
   return (
@@ -46,23 +47,18 @@ export const Home = () => {
             text={"Let's make a habits together  🙌"}
           />
         </View>
-        {/* const {heading, text, progress} = props; */}
 
         <ScrollView horizontal style={[scroll_view_horizontal]}>
-          <TaskCard
-            heading={'Application Design'}
-            text={'UI Design Kit'}
-            progress_str={'50/80'}
-            progress_num={50 / 80}
-            isThemeChange={true}
-          />
-          <TaskCard
-            heading={'Overlay Design'}
-            text={'UI Design Kit'}
-            progress_str={'50/80'}
-            progress_num={50 / 80}
-            isThemeChange={false}
-          />
+          {task.map(({task_name, board}, i) => (
+            <TaskCard
+              heading={task_name}
+              text={board}
+              progress_num={i / task.length}
+              progress_str={`${i}/${task.length}`}
+              isThemeChange={i % 2 === 0}
+              key={i}
+            />
+          ))}
         </ScrollView>
 
         <View style={[center, progress_view]}>
@@ -78,41 +74,24 @@ export const Home = () => {
       </View>
 
       <ScrollView contentContainerStyle={[container]} style={{backgroundColor}}>
-        <ProgressCard
-          title="Productivity Mobile App"
-          heading="Create Details Booking"
-          time="2 min ago"
-          percentage={60}
-        />
-
-        <ProgressCard
-          title="Banking Mobile App"
-          heading="Revision Home Page"
-          time="5 min ago"
-          percentage={70}
-        />
-        <ProgressCard
-          title="Banking Mobile App"
-          heading="Revision Home Page"
-          time="5 min ago"
-          percentage={70}
-        />
-
-        <ProgressCard
-          title="Online Course"
-          heading="Working On Landing Page"
-          time="7 min ago"
-          percentage={80}
-        />
+        {task.map(({task_name, board, createdAt}, i) => (
+          <ProgressCard
+            heading={task_name}
+            title={board}
+            time={formatDistanceToNowStrict(new Date(createdAt), {
+              addSuffix: true,
+            })}
+            percentage={Math.random().toFixed() + i}
+            key={i}
+            // progress_str={`${i + 10}/${task.length + 10}`}
+          />
+        ))}
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  bgColor: {
-    backgroundColor: 'white',
-  },
   container: {
     paddingHorizontal: 20,
   },
@@ -123,7 +102,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   scroll_view_horizontal: {
-    // paddingTop: 20,
+    // padding: 10,
   },
   center: {
     flexDirection: 'row',

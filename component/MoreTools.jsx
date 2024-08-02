@@ -16,15 +16,16 @@ export const MoreTools = ({visible, Component, onDismiss}) => {
       onPress: () => navigation.navigate('Add_task'),
     },
     {
-      icon: 'plus-box-outline',
-      text: 'Create Project',
-      onPress: () => console.log('Create Project'),
-    },
-    {
       icon: 'account-group-outline',
       text: 'Create Team',
       onPress: () => navigation.navigate('Create_team'),
     },
+    {
+      icon: 'plus-box-outline',
+      text: 'Create Project',
+      onPress: () => console.log('Create Project'),
+    },
+
     {
       icon: 'clock-outline',
       text: 'Create Event',
@@ -38,7 +39,14 @@ export const MoreTools = ({visible, Component, onDismiss}) => {
       <Modal
         onDismiss={onDismiss}
         visible={visible}
-        style={[modal_style, {backgroundColor}]}>
+        style={[
+          modal_style,
+          {
+            backgroundColor,
+            borderWidth: 1,
+            borderColor: color,
+          },
+        ]}>
         <View style={[container]}>
           {tools_arr.map(({icon, onPress, text}, i) => (
             <View style={[element_container]} key={i}>

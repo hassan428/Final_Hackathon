@@ -6,13 +6,22 @@ import {Custom_input} from '../component/Custom_input';
 import {SomeText} from '../component/Text_component';
 import {Avatar, IconButton} from 'react-native-paper';
 import {ActiveBtn, Submit_btn} from '../component/CustomBtn';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {cut_member_action, cut_team_action} from '../store/slices/add_slice';
+import {api_add_task} from '../config/Apis';
+import {add_task_action} from '../store/slices/task_slice';
 
 export const Add_task = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const navigation = useNavigation();
+  const [btn_loading, set_btn_loading] = useState(false);
+  const dispatch = useDispatch();
   const [data, setData] = useState({board: 'Running'});
   const [errorMsg, setErrorMsg] = useState({});
+  const {team} = useSelector(store => store.team);
+  const {team_id} = useSelector(store => store.add);
+  const filteredUsers = team.filter(team => team_id.includes(team._id));
+
   const inputValue = (text, id) => {
     if (id == 'start_time' || id == 'end_time') {
       if (text == '') {
@@ -30,8 +39,21 @@ export const Add_task = () => {
   };
 
   const submit_handle = async () => {
-    // setData({...data, board});
-    console.log('data', data);
+    // console.log('data', data);
+    set_btn_loading(true);
+    try {
+      const res = await api_add_task({
+        ...data,
+        team: [...team_id],
+        date: newDate,
+      });
+      dispatch(add_task_action(res.data.task));
+      navigation.navigate('Projects');
+      console.log('res', res.data);
+    } catch (error) {
+      set_btn_loading(false);
+      console.log('error', error.response.data);
+    }
   };
 
   const months = [
@@ -48,28 +70,14 @@ export const Add_task = () => {
     'November',
     'December',
   ];
+
   const newDate = new Date();
   const date = newDate.getDate();
   const month = months[newDate.getMonth()];
   const year = newDate.getFullYear();
 
-  const team_member_array = [
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-    {
-      avatar_uri:
-        'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-      name: 'Jeny',
-    },
-  ];
+  const avatar_uri =
+    'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png';
 
   const start_end_time = [
     {
@@ -120,27 +128,44 @@ export const Add_task = () => {
           onChangeText={text => inputValue(text, 'task_name')}
         />
 
-        <SomeText text="Team Member" myStyle={some_text} />
+        <SomeText text="Team" myStyle={some_text} />
 
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
-          {team_member_array.map(({avatar_uri, name}, i) => (
-            <View style={{alignItems: 'center'}} key={i}>
+          {filteredUsers?.map(({team_name, _id}, i) => (
+            <View style={{alignItems: 'center', marginVertical: 10}} key={i}>
               <Avatar.Image
                 size={45}
                 source={{
                   uri: avatar_uri,
                 }}
               />
-              <SomeText text={name} />
+
+              <IconButton
+                onPress={() => dispatch(cut_team_action(_id))}
+                icon="close-circle"
+                iconColor={color}
+                size={20}
+                style={{
+                  position: 'absolute',
+                  bottom: 40,
+                  alignItems: 'flex-end',
+                }}
+              />
+              <SomeText text={team_name} />
             </View>
           ))}
-          <IconButton
-            size={30}
-            icon={'plus'}
-            iconColor={primary}
-            style={[add_icon_style, {borderColor: primary}]}
-            onPress={() => console.log('first')}
-          />
+          {team.length !== team_id.length && (
+            <IconButton
+              size={30}
+              icon={'plus'}
+              iconColor={primary}
+              style={[
+                add_icon_style,
+                {borderColor: primary, marginVertical: 5},
+              ]}
+              onPress={() => navigation.navigate('Add_team')}
+            />
+          )}
         </ScrollView>
 
         <SomeText text="Date" myStyle={some_text} />
@@ -198,7 +223,9 @@ export const Add_task = () => {
         </View>
 
         <Submit_btn
-          text="Save"
+          text="Add Task"
+          loading={btn_loading}
+          disabled={btn_loading}
           myStyle={submit_btn_style}
           onPress={submit_handle}
         />
@@ -217,12 +244,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   team_scroll: {
-    gap: 10,
+    gap: 15,
   },
   add_icon_style: {
     borderWidth: 2,
     borderRadius: 50,
-
     margin: 0,
   },
   date_style: {

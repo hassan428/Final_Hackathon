@@ -12,7 +12,11 @@ import {Second_screen} from '../../Screens/Second_screen';
 import {Third_screen} from '../../Screens/Third_screen';
 import {OTPVerification} from '../../Screens/OTPVerification';
 import {api_auth_check} from '../Apis';
-import {islogged_action, profile_action} from '../../store/slices/auth_slice';
+import {
+  islogged_action,
+  other_user_profile_action,
+  profile_action,
+} from '../../store/slices/auth_slice';
 import {NewPassword} from '../../Screens/NewPassword';
 import {Create_team} from '../../Screens/Create_team';
 import {Add_task} from '../../Screens/Add_task';
@@ -21,6 +25,10 @@ import {_id_name, dark_mode_key} from '../../utils/constants';
 import {Settings} from '../../Screens/Setting';
 import {set_dark_mode} from '../../store/slices/theme_slice';
 import {Edit_profile} from '../../Screens/Edit_profile';
+import {Add_member} from '../../Screens/Add_member';
+import {auth_check_team_action} from '../../store/slices/team_slice';
+import {Add_team} from '../../Screens/Add_team';
+import {auth_check_task_action} from '../../store/slices/task_slice';
 
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
@@ -42,12 +50,15 @@ const App_navigation = () => {
       const res = await api_auth_check();
       console.log('res', res.data);
       dispatch(profile_action(res.data.data));
+      dispatch(other_user_profile_action(res.data.other_user));
+      dispatch(auth_check_team_action(res.data.team));
+      dispatch(auth_check_task_action(res.data.task));
       dispatch(islogged_action(true));
       splashOffHandle();
     } catch (error) {
       await AsyncStorage.removeItem(_id_name);
       splashOffHandle();
-      console.log('error', error);
+      console.log('error', error.response.data);
     }
   };
 
@@ -62,6 +73,8 @@ const App_navigation = () => {
         {name: 'BottomTabs', component: BottomTabs},
         {name: 'Create_team', component: Create_team},
         {name: 'Add_task', component: Add_task},
+        {name: 'Add_member', component: Add_member},
+        {name: 'Add_team', component: Add_team},
         {name: 'Edit_profile', component: Edit_profile},
         {name: 'Settings', component: Settings},
         {name: 'NewPassword', component: NewPassword},

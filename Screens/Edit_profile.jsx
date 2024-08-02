@@ -11,13 +11,13 @@ import {validateEmail} from '../utils/validate_email';
 import {api_update_profile} from '../config/Apis';
 import {islogged_action, profile_action} from '../store/slices/auth_slice';
 import {Alert_dialog} from '../component/Alert_dialog';
-import {Submit_btn} from '../component/CustomBtn';
+import {ActiveBtn, Submit_btn} from '../component/CustomBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {token_name} from '../utils/constants';
 
 export const Edit_profile = () => {
-  const {profile} = useSelector(store => store.auth);
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
+  const {profile} = useSelector(store => store.auth);
   const {username, full_name, email, phone_number, _id} = profile;
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -159,7 +159,7 @@ export const Edit_profile = () => {
     },
   ];
 
-  const {container, center, some_text, err_msg, scrollView_container} = styles;
+  const {container, center, some_text, err_msg, edit_btn} = styles;
   return (
     <>
       <AppBar
@@ -173,7 +173,7 @@ export const Edit_profile = () => {
         {...alert_data}
         hideDialog={() => set_alert_data({showAlert: false})}
       />
-      <View style={[container, {backgroundColor}]}>
+      <ScrollView style={{backgroundColor}} contentContainerStyle={[container]}>
         <View style={[center, {gap: 5}]}>
           {data.avatar_url ? (
             <Avatar.Image
@@ -201,7 +201,7 @@ export const Edit_profile = () => {
 
         {errorMsg.other && <SomeText myStyle={err_msg} text={errorMsg.other} />}
 
-        <ScrollView contentContainerStyle={[scrollView_container]}>
+        <View style={{gap: 10}}>
           {render_input_field.map(
             (
               {id, name, defaultValue, keyboardType, value, error, disabled},
@@ -223,35 +223,40 @@ export const Edit_profile = () => {
               </View>
             ),
           )}
-        </ScrollView>
-
+        </View>
+        <View style={[edit_btn, {borderColor: primary}]}>
+          <ActiveBtn
+            text="Change Password"
+            onPress={() => navigation.navigate('NewPassword')}
+          />
+        </View>
         <Submit_btn
           text={'LogOut'}
           onPress={() => show_alert_handle('LogOut')}
+          myStyle={{marginVertical: 10}}
         />
-      </View>
+      </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
-  },
-  scrollView_container: {
-    // flex: 1,
-    marginVertical: 15,
     gap: 20,
   },
   center: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  edit_btn: {
+    borderWidth: 1,
+    borderRadius: 25,
+    marginTop: 5,
+  },
   some_text: {
     fontSize: 15,
     marginBottom: 15,
-    marginTop: 30,
   },
   err_msg: {
     color: 'red',
