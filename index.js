@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const allRoutes = require("./routes/index");
-const cookieParser = require("cookie-parser");
 const app = express();
 const { PORT } = process.env;
 const cors = require("cors");
@@ -19,15 +18,13 @@ try {
   //   })
   // );
 
-  app.use(cookieParser());
-  // Note: cookie parser must be used before express.json() and express.use(allRoutes);
   app.use(express.json()); // for parsing application/json
   app.use(allRoutes);
   connect_to_database();
 
   app.use(error_handler);
 } catch (error) {
-  console.log(error);
+  console.log("error", error);
 }
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);

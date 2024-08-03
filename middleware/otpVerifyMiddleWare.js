@@ -25,7 +25,6 @@ const otpVerifyMiddleWare = async (req, res, next) => {
 
     if (code !== otp) {
       await otpFound.updateOne({ typeWrongCode: typeWrongCode + 1 });
-      console.log(typeWrongCode);
       if (typeWrongCode >= 2) {
         await otpFound.deleteOne();
         next({ message: "otp expired", status: 404 });
