@@ -50,9 +50,21 @@ export const Add_task = () => {
       dispatch(add_task_action(res.data.task));
       navigation.navigate('Projects');
       console.log('res', res.data);
-    } catch (error) {
+    } catch (err) {
       set_btn_loading(false);
-      console.log('error', error.response.data);
+      if (err.response.data) {
+        const {message, success} = err.response.data;
+        if (message.includes('task_name:')) {
+          setErrorMsg({task_name: 'Task Name is required.'});
+        } else if (message.includes('start_time:')) {
+          setErrorMsg({start_time: 'Start Time is required.'});
+        } else if (message.includes('end_time:')) {
+          setErrorMsg({end_time: 'End Time is required.'});
+        }
+      } else {
+        setErrorMsg({other: message});
+      }
+      console.log('error', err.response.data);
     }
   };
 
@@ -126,8 +138,11 @@ export const Add_task = () => {
         <Custom_input
           placeholder={'Task Name'}
           onChangeText={text => inputValue(text, 'task_name')}
+          error={errorMsg.task_name && true}
         />
-
+        {errorMsg.task_name && (
+          <SomeText myStyle={{color: 'red'}} text={errorMsg.task_name} />
+        )}
         <SomeText text="Team" myStyle={some_text} />
 
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
@@ -154,26 +169,24 @@ export const Add_task = () => {
               <SomeText text={team_name} />
             </View>
           ))}
-          {team.length !== team_id.length && (
-            <IconButton
-              size={30}
-              icon={'plus'}
-              iconColor={primary}
-              style={[
-                add_icon_style,
-                {borderColor: primary, marginVertical: 5},
-              ]}
-              onPress={() => navigation.navigate('Add_team')}
-            />
-          )}
+          {team.length == 0 ||
+            (team.length !== team_id.length && (
+              <IconButton
+                size={30}
+                icon={'plus'}
+                iconColor={primary}
+                style={[
+                  add_icon_style,
+                  {borderColor: primary, marginVertical: 5},
+                ]}
+                onPress={() => navigation.navigate('Add_team')}
+              />
+            ))}
         </ScrollView>
 
         <SomeText text="Date" myStyle={some_text} />
 
-        <SomeText
-          text={`${month} ${date}, ${year}`}
-          myStyle={{...date_style, color}}
-        />
+        <Custom_input value={`${month} ${date}, ${year}`} disabled />
 
         <View style={[aligning]}>
           {start_end_time.map(({label, id, placeholder}, i) => (

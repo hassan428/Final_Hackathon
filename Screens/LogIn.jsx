@@ -20,7 +20,7 @@ import {
   profile_action,
 } from '../store/slices/auth_slice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {token_name} from '../utils/constants';
+import {TOKEN_NAME} from '@env';
 import {Loading} from '../component/Loading';
 import {auth_check_team_action} from '../store/slices/team_slice';
 import {auth_check_task_action} from '../store/slices/task_slice';
@@ -61,7 +61,7 @@ export const LogIn = () => {
         const res_login = await api_login(data);
         console.log('res_login', res_login.data);
         set_loading(true);
-        await AsyncStorage.setItem(token_name, res_login.data.token);
+        await AsyncStorage.setItem(TOKEN_NAME, res_login.data.token);
         const res = await api_auth_check();
         dispatch(profile_action(res.data.data));
         dispatch(other_user_profile_action(res.data.other_user));
@@ -103,7 +103,7 @@ export const LogIn = () => {
         const res = await api_send_otp(data);
         navigation.navigate('OTPVerification', data.email);
         loadingOffHandle();
-      } catch (error) {
+      } catch (err) {
         set_loading(false);
         const {message, success} = err.response.data;
         setErrorMsg({other: message});

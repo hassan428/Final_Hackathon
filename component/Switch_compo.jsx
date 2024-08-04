@@ -3,8 +3,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Switch} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {set_dark_mode} from '../store/slices/theme_slice';
-import {dark_mode_key} from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {DARK_MODE_KEY} from '@env';
 
 export const Switch_compo = props => {
   const {switch_text, dark_mode} = props;
@@ -16,7 +16,7 @@ export const Switch_compo = props => {
     setIsSwitchOn(!isSwitchOn);
     if (switch_text == 'Dark Mode') {
       dispatch(set_dark_mode(!dark_mode));
-      AsyncStorage.setItem(dark_mode_key, JSON.stringify(!dark_mode));
+      AsyncStorage.setItem(DARK_MODE_KEY, JSON.stringify(!dark_mode));
     }
   };
 

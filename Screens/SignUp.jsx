@@ -10,9 +10,9 @@ import {api_signup} from '../config/Apis';
 import {useDispatch, useSelector} from 'react-redux';
 import {profile_action} from '../store/slices/auth_slice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {_id_name} from '../utils/constants';
 import {validateEmail} from '../utils/validate_email';
 import {Loading} from '../component/Loading';
+import {USER_UID} from '@env';
 
 export const SignUp = () => {
   const [data, setData] = useState({});
@@ -54,7 +54,7 @@ export const SignUp = () => {
         const res = await api_signup(data);
         set_loading(true);
         // console.log('res', res.data.data);
-        await AsyncStorage.setItem(_id_name, res.data.data._id);
+        await AsyncStorage.setItem(USER_UID, res.data.data._id);
         dispatch(profile_action(res.data.data));
         navigation.navigate('OTPVerification');
         loadingOffHandle();
@@ -63,7 +63,7 @@ export const SignUp = () => {
     } catch (err) {
       set_btn_loading(false);
       console.log(err.response.data);
-      if (err.response.data) {
+      if (err.response.data.message) {
         const {message, success} = err.response.data;
         if (message.includes('duplicate')) {
           if (message.includes('username:')) {

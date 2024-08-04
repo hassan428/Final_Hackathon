@@ -16,11 +16,12 @@ export const Create_team = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [data, setData] = useState({teamType: 'Private'});
+  const [errorMsg, setErrorMsg] = useState({});
   const [btn_loading, set_btn_loading] = useState(false);
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {other_user_profile, profile} = useSelector(store => store.auth);
   const {member_id} = useSelector(store => store.add);
-  const filteredUsers = other_user_profile.filter(user =>
+  const filteredUsers = other_user_profile?.filter(user =>
     member_id.includes(user._id),
   );
   const inputValue = (text, id) => {
@@ -38,9 +39,17 @@ export const Create_team = () => {
       dispatch(create_team_action(res.data.team));
       navigation.navigate('Chat');
       console.log('res', res.data);
-    } catch (error) {
+    } catch (err) {
       set_btn_loading(false);
-      console.log('error', error.response.data);
+      if (err.response.data) {
+        const {message, success} = err.response.data;
+        if (message.includes('team_name:')) {
+          setErrorMsg({team_name: 'Task Name is required.'});
+        } else {
+          setErrorMsg({other: message});
+        }
+      }
+      console.log('err', err.response.data);
     }
   };
 
@@ -123,16 +132,17 @@ export const Create_team = () => {
             myStyle={{fontSize: 15}}
           />
         </View>
-
         <SomeText text="Team Name" myStyle={{...some_text, marginTop: 15}} />
-
         <Custom_input
           placeholder={'Team Name'}
           onChangeText={text => inputValue(text, 'team_name')}
+          error={errorMsg.team_name && true}
         />
+        {errorMsg.team_name && (
+          <SomeText myStyle={{color: 'red'}} text={errorMsg.team_name} />
+        )}
 
         <SomeText text="Team Member" myStyle={some_text} />
-
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
           {filteredUsers?.map(({username, _id}, i) => (
             <View style={{alignItems: 'center', marginVertical: 10}} key={i}>
@@ -156,7 +166,7 @@ export const Create_team = () => {
               <SomeText text={username} />
             </View>
           ))}
-          {other_user_profile.length !== member_id.length && (
+          {other_user_profile?.length !== member_id?.length && (
             <IconButton
               size={30}
               icon={'plus'}
@@ -169,9 +179,7 @@ export const Create_team = () => {
             />
           )}
         </ScrollView>
-
         <SomeText text="Type" myStyle={some_text} />
-
         <View style={[aligning]}>
           {type_detals.map(({label}, i) => {
             const selected = label == data.teamType;
@@ -195,6 +203,13 @@ export const Create_team = () => {
             );
           })}
         </View>
+
+        {errorMsg.other && (
+          <SomeText
+            myStyle={{color: 'red', textAlign: 'center', marginTop: 20}}
+            text={errorMsg.other}
+          />
+        )}
 
         <Submit_btn
           text="Create Team"

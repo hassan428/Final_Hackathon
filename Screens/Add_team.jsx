@@ -4,7 +4,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Custom_input} from '../component/Custom_input';
 import {useDispatch, useSelector} from 'react-redux';
 import {Member_card} from '../component/Member_card';
-import {add_member_action, add_team_action} from '../store/slices/add_slice';
+import {add_team_action} from '../store/slices/add_slice';
+import {ScrollView} from 'react-native';
 
 export const Add_team = () => {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ export const Add_team = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {team} = useSelector(store => store.team);
   const {team_id} = useSelector(store => store.add);
-  const filteredUsers = team.filter(team => !team_id.includes(team._id));
+  const filteredUsers = team?.filter(team => !team_id.includes(team._id));
   return (
     <>
       <AppBar
@@ -24,15 +25,17 @@ export const Add_team = () => {
       <View style={[container, {backgroundColor}]}>
         <Custom_input icon="magnify" placeholder="Search Team" />
 
-        {filteredUsers?.map(({team_name, teamType, _id}, i) => (
-          <Member_card
-            color={color}
-            username={team_name}
-            email={teamType}
-            key={i}
-            add_member_handle={() => dispatch(add_team_action(_id))}
-          />
-        ))}
+        <ScrollView>
+          {filteredUsers?.map(({team_name, teamType, _id}, i) => (
+            <Member_card
+              color={color}
+              username={team_name}
+              email={teamType}
+              key={i}
+              add_member_handle={() => dispatch(add_team_action(_id))}
+            />
+          ))}
+        </ScrollView>
       </View>
     </>
   );

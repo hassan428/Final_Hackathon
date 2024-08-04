@@ -24,7 +24,7 @@ export const TaskCard = props => {
 
   const {container, avatar_view, second_container, fontColor} = styles2;
   return (
-    <View style={[{maxWidth: '80%'}]}>
+    <View style={[{maxWidth: '90%'}]}>
       <View style={[container]}>
         <View>
           <HeadingText text={heading} myStyle={{...fontColor}} />
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
     borderWidth: 2,
+    maxWidth: '100%',
   },
   avatar_view: {
     flexDirection: 'row',

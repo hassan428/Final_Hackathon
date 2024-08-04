@@ -4,12 +4,18 @@ import {Heading, SomeText} from '../component/Text_component';
 import {Submit_btn} from '../component/CustomBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {AppBar} from '../component/AppBar';
-import {api_verify_otp} from '../config/Apis';
+import {api_auth_check, api_verify_otp} from '../config/Apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {_id_name, token_name} from '../utils/constants';
-import {islogged_action, profile_action} from '../store/slices/auth_slice';
+import {
+  islogged_action,
+  other_user_profile_action,
+  profile_action,
+} from '../store/slices/auth_slice';
 import {Loading} from '../component/Loading';
+import {USER_UID, TOKEN_NAME} from '@env';
+import {auth_check_team_action} from '../store/slices/team_slice';
+import {auth_check_task_action} from '../store/slices/task_slice';
 
 export const OTPVerification = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -43,18 +49,22 @@ export const OTPVerification = () => {
       } else {
         set_btn_loading(true);
         setErrorMsg('');
-        // console.log('otpCode', otpCode);
-        const _id = await AsyncStorage.getItem(_id_name);
+        console.log('otpCode', otpCode);
+        const _id = await AsyncStorage.getItem(USER_UID);
         // console.log('_id', _id);
-        const res = await api_verify_otp({
+        const res_otp_verify = await api_verify_otp({
           code: otpCode,
           _id,
           email: email_param,
         });
         set_loading(true);
 
-        await AsyncStorage.setItem(token_name, res.data.token);
+        await AsyncStorage.setItem(TOKEN_NAME, res_otp_verify.data.token);
+        const res = await api_auth_check();
         dispatch(profile_action(res.data.data));
+        dispatch(other_user_profile_action(res.data.other_user));
+        dispatch(auth_check_team_action(res.data.team));
+        dispatch(auth_check_task_action(res.data.task));
         dispatch(islogged_action(true));
         navigation.navigate('BottomTabs');
         // console.log('res', res.data);
@@ -117,7 +127,7 @@ export const OTPVerification = () => {
           loading={btn_loading}
           disabled={btn_loading}
           onPress={submit_handle}
-          text={'Verify OTP'}
+          text={'Submit'}
         />
       </ScrollView>
     </>

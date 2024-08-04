@@ -13,8 +13,7 @@ import {islogged_action, profile_action} from '../store/slices/auth_slice';
 import {Alert_dialog} from '../component/Alert_dialog';
 import {ActiveBtn, Submit_btn} from '../component/CustomBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {token_name} from '../utils/constants';
-
+import {TOKEN_NAME} from '@env';
 export const Edit_profile = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {profile} = useSelector(store => store.auth);
@@ -91,7 +90,7 @@ export const Edit_profile = () => {
 
   const logout_handle = async () => {
     try {
-      await AsyncStorage.removeItem(token_name);
+      await AsyncStorage.removeItem(TOKEN_NAME);
       dispatch(islogged_action(false));
       navigation.navigate('LogIn');
     } catch (error) {

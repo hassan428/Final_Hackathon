@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {AppBar} from '../component/AppBar';
 import {useNavigation} from '@react-navigation/native';
 import {Custom_input} from '../component/Custom_input';
@@ -25,16 +25,17 @@ export const Add_member = () => {
       />
       <View style={[container, {backgroundColor}]}>
         <Custom_input icon="magnify" placeholder="Search Member" />
-
-        {filteredUsers?.map(({username, email, _id}, i) => (
-          <Member_card
-            color={color}
-            username={username}
-            email={email}
-            key={i}
-            add_member_handle={() => dispatch(add_member_action(_id))}
-          />
-        ))}
+        <ScrollView>
+          {filteredUsers?.map(({username, email, _id}, i) => (
+            <Member_card
+              color={color}
+              username={username}
+              email={email}
+              key={i}
+              add_member_handle={() => dispatch(add_member_action(_id))}
+            />
+          ))}
+        </ScrollView>
       </View>
     </>
   );
