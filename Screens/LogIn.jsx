@@ -69,6 +69,7 @@ export const LogIn = () => {
         dispatch(auth_check_task_action(res.data.task));
         dispatch(islogged_action(true));
         // console.log('res', res.data);
+        loadingOffHandle();
         set_loading(false);
       }
     } catch (err) {
