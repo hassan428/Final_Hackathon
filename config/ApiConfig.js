@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {BACKEND_URL, TOKEN_NAME} from '@env';
+import {BACK_END_URL, TOKEN_NAME} from '@env';
 export const apiHandle = axios.create({
-  baseURL: BACKEND_URL,
+  baseURL: BACK_END_URL,
   headers: {
     ...axios.defaults.headers,
     'Content-Type': 'application/json',
