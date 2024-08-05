@@ -1,13 +1,19 @@
 const Team = require("../models_schema/team_model");
+const { team_avatar } = require("../utils/avatar");
 
 const create_team = async (req, res, next) => {
   try {
-    const team = await Team.create(req.body);
+    const randomIndex = Math.floor(Math.random() * 10);
+
+    const team_avatar_url = team_avatar[randomIndex];
+    const team = await Team.create({ ...req.body, team_avatar_url });
+
     res.status(201).json({ success: true, team });
   } catch (err) {
     next(err);
   }
 };
+
 // const get_teams = async (req, res, next) => {
 //   try {
 //     const teams = await Team.findAll();

@@ -4,7 +4,6 @@ const user_model = require("../models_schema/user_profile");
 const non_verify_email = async (req, res, next) => {
   try {
     const { email, username, phone_number } = req.body;
-
     const find_user = await user_model.find({
       $or: [
         { email: email },

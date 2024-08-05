@@ -6,31 +6,28 @@ const teamSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    team_avatar_url: String,
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user_profiles",
       },
+      { required: true },
     ],
     teamType: {
       type: String,
       enum: ["Private", "Public", "Secret"],
       default: "Private",
     },
-    // courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "/courses" }],
-    // messages: [
-    //   {
-    //     sender: { type: mongoose.Schema.Types.ObjectId, ref: "/authusers" },
-    //     content: { type: String, required: true },
-    //     createdAt: { type: Date, default: Date.now },
-    //   },
-    // ],
   },
   {
     timestamps: true,
   }
 );
 
+teamSchema.path("members").validate(function (value) {
+  return value.length > 1;
+}, "The team must have at least one member.");
 const Team = mongoose.model("Team", teamSchema);
 
 module.exports = Team;

@@ -9,4 +9,4 @@ const add_task = async (req, res, next) => {
   }
 };
 
-module.exports = {add_task};
+module.exports = { add_task };

@@ -4,18 +4,29 @@ const { email_send } = require("../services/nodemailer_service");
 const { generateOtp } = require("../services/genereate_otp");
 const user_model = require("../models_schema/user_profile");
 const code_model = require("../models_schema/user_codes");
+const { male_avatar, female_avatar } = require("../utils/avatar");
 
 const { GENSALT, JWT_SECRET } = process.env;
 
 const signUp = async (req, res, next) => {
   try {
     const { user } = req;
-    const { password, username, email } = user;
-
+    const { password, username, email, gender } = user;
     const genSalt = bcrypt.genSaltSync(+GENSALT);
     const hash = bcrypt.hashSync(password, genSalt);
+    const randomIndex = Math.floor(Math.random() * 10);
 
-    const create_user = await user_model.create({ ...user, password: hash });
+    let avatar_url = "";
+    if (gender == "Female") {
+      avatar_url = female_avatar[randomIndex];
+    } else {
+      avatar_url = male_avatar[randomIndex];
+    }
+    const create_user = await user_model.create({
+      ...user,
+      password: hash,
+      avatar_url,
+    });
     const { _id } = create_user;
     const otp = generateOtp();
 

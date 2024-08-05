@@ -4,7 +4,6 @@ const user_model = require("../models_schema/user_profile");
 const otpVerifyMiddleWare = async (req, res, next) => {
   try {
     const { code: otp, _id, email } = req.body;
-    // console.log("req.body", req.body);
     const find_user = _id
       ? await user_model.findById(_id)
       : await user_model.findOne({ email });
