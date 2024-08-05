@@ -49,7 +49,7 @@ export const OTPVerification = () => {
       } else {
         set_btn_loading(true);
         setErrorMsg('');
-        console.log('otpCode', otpCode);
+        // console.log('otpCode', otpCode);
         const _id = await AsyncStorage.getItem(USER_UID);
         // console.log('_id', _id);
         const res_otp_verify = await api_verify_otp({

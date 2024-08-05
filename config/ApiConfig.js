@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BACKEND_URL, TOKEN_NAME} from '@env';
-
 export const apiHandle = axios.create({
   baseURL: BACKEND_URL,
   headers: {

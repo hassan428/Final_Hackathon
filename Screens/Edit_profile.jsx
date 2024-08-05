@@ -17,27 +17,13 @@ import {TOKEN_NAME} from '@env';
 export const Edit_profile = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {profile} = useSelector(store => store.auth);
-  const {username, full_name, email, phone_number, _id} = profile;
+  const {username, full_name, email, phone_number, _id, avatar_url} = profile;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [errorMsg, setErrorMsg] = useState({});
   const [data, setData] = useState({...profile});
   const [showAlert, setShowAlert] = useState(false);
   const [alert_data, set_alert_data] = useState({});
-
-  const openGalleryHandle = async () => {
-    const {assets, didCancel, errorCode, errorMessage} =
-      await launchImageLibrary({
-        mediaType: 'photo',
-      });
-    if (didCancel) {
-      console.log('User did not select an image.');
-    } else if (errorCode) {
-      console.log('error: ', errorCode, errorMessage);
-    } else {
-      setData({...data, avatar_url: assets[0].uri});
-    }
-  };
 
   const inputValue = (text, id) => {
     setErrorMsg({[id]: ''});
@@ -61,12 +47,11 @@ export const Edit_profile = () => {
 
       if (Object.keys(filteredData).length > 0) {
         const res = await api_update_profile({...filteredData, _id});
-        console.log('res', res.data.data);
+        // console.log('res', res.data.data);
         dispatch(profile_action(res.data.data));
         navigation.navigate('Home');
       } else {
         navigation.navigate('Home');
-        console.log('No changes made');
       }
     } catch (err) {
       set_alert_data({showAlert: false});
@@ -158,7 +143,15 @@ export const Edit_profile = () => {
     },
   ];
 
-  const {container, center, some_text, err_msg, edit_btn} = styles;
+  const {
+    container,
+    center,
+    some_text,
+    err_msg,
+    edit_btn,
+    border_style,
+    inputs_container,
+  } = styles;
   return (
     <>
       <AppBar
@@ -173,29 +166,15 @@ export const Edit_profile = () => {
         hideDialog={() => set_alert_data({showAlert: false})}
       />
       <ScrollView style={{backgroundColor}} contentContainerStyle={[container]}>
-        <View style={[center, {gap: 5}]}>
-          {data.avatar_url ? (
+        <View style={[center]}>
+          <View style={{borderWidth: 2, borderColor: color, borderRadius: 100}}>
             <Avatar.Image
               size={100}
               source={{
-                uri: data.avatar_url,
+                uri: avatar_url,
               }}
             />
-          ) : (
-            <Avatar.Image
-              size={100}
-              source={{
-                uri: 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-              }}
-            />
-          )}
-          <IconButton
-            onPress={openGalleryHandle}
-            icon="pencil-circle"
-            iconColor={color}
-            size={30}
-            style={{position: 'absolute', left: 175, top: 50}}
-          />
+          </View>
         </View>
 
         {errorMsg.other && <SomeText myStyle={err_msg} text={errorMsg.other} />}
@@ -206,18 +185,19 @@ export const Edit_profile = () => {
               {id, name, defaultValue, keyboardType, value, error, disabled},
               i,
             ) => (
-              <View key={i}>
+              <View key={i} style={[inputs_container]}>
                 <SomeText text={name} myStyle={{...some_text, marginTop: 15}} />
-
-                <Custom_input
-                  placeholder={'Task Name'}
-                  defaultValue={defaultValue}
-                  value={value}
-                  keyboardType={keyboardType}
-                  disabled={disabled}
-                  error={error && true}
-                  onChangeText={text => inputValue(text, id)}
-                />
+                <View style={[border_style, {borderColor: color}]}>
+                  <Custom_input
+                    placeholder={'Task Name'}
+                    defaultValue={defaultValue}
+                    value={value}
+                    keyboardType={keyboardType}
+                    disabled={disabled}
+                    error={error && true}
+                    onChangeText={text => inputValue(text, id)}
+                  />
+                </View>
                 {error && <SomeText myStyle={err_msg} text={error} />}
               </View>
             ),
@@ -253,9 +233,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginTop: 5,
   },
-  some_text: {
-    fontSize: 15,
-    marginBottom: 15,
+  border_style: {
+    borderWidth: 1,
+    borderRadius: 15,
+  },
+  inputs_container: {
+    gap: 10,
   },
   err_msg: {
     color: 'red',

@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, forwardRef} from 'react';
 import {TextInput} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 });
 const {fontFamily} = styles;
 
-const Custom_input = props => {
+const Custom_input = forwardRef((props, ref) => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   return (
     <TextInput
@@ -25,11 +25,12 @@ const Custom_input = props => {
       placeholderTextColor={color}
       contentStyle={[fontFamily, {color}]}
       right={props.icon && <TextInput.Icon icon={props.icon} color={color} />}
+      ref={ref}
       {...props}
       style={{backgroundColor, color, ...props.style}}
     />
   );
-};
+});
 
 const Password_input = props => {
   const [visibility, setVisibility] = useState(true);

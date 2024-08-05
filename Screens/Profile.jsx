@@ -9,19 +9,20 @@ import {useNavigation} from '@react-navigation/native';
 export const Profile = () => {
   const store = useSelector(store => store.auth);
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
-  const {username, full_name, email} = store.profile;
+  const {username, full_name, email, avatar_url} = store.profile;
   const {container, center, edit_btn, aligning, aligning_2} = styles;
   const navigation = useNavigation();
+  const {task} = useSelector(store => store.task);
 
   const profile_task_details = [
     {
       icon: 'clock-outline',
-      quantity: '5',
+      quantity: task.length,
       text: 'On Going',
     },
     {
       icon: 'sticker-check-outline',
-      quantity: '25',
+      quantity: '0',
       text: 'Total Complete',
     },
   ];
@@ -29,7 +30,6 @@ export const Profile = () => {
   const profile_screen_route = [
     {
       name: 'My Projects',
-      // onPress: () => console.log('My Projects Screens'),
       onPress: () => navigation.navigate('Projects'),
     },
     {
@@ -42,7 +42,7 @@ export const Profile = () => {
     },
     {
       name: 'My Task',
-      onPress: () => console.log('My Task Screens'),
+      onPress: () => navigation.navigate('Projects'),
     },
   ];
 
@@ -55,19 +55,21 @@ export const Profile = () => {
       />
       <View style={[container, {backgroundColor}]}>
         <View style={[center, {gap: 5}]}>
-          <Avatar.Image
-            size={100}
-            source={{
-              uri: 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-            }}
-          />
+          <View style={{borderWidth: 2, borderColor: color, borderRadius: 100}}>
+            <Avatar.Image
+              size={100}
+              source={{
+                uri: avatar_url,
+              }}
+            />
+          </View>
           <View style={[center]}>
             <HeadingText text={full_name} myStyle={{textAlign: 'center'}} />
             <SomeText text={username} myStyle={{textAlign: 'center'}} />
             <View style={[edit_btn, {borderColor: primary}]}>
               <ActiveBtn
-                text="Edit"
-                onPress={() => navigation.navigate('Edit_profile')}
+                text="View Profile"
+                onPress={() => navigation.navigate('ViewProfile')}
               />
             </View>
           </View>
@@ -81,7 +83,6 @@ export const Profile = () => {
                 size={25}
                 iconColor={color}
                 style={{position: 'relative', top: 10}}
-                onPress={() => console.log('Pressed')}
               />
               <HeadingText text={quantity} />
               <SomeText text={text} />
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
   },
   edit_btn: {
     borderWidth: 1,
-    borderRadius: 25,
+    borderRadius: 15,
     marginTop: 5,
   },
   aligning: {

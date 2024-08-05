@@ -30,8 +30,11 @@ import {auth_check_team_action} from '../../store/slices/team_slice';
 import {Add_team} from '../../Screens/Add_team';
 import {auth_check_task_action} from '../../store/slices/task_slice';
 import {USER_UID, DARK_MODE_KEY} from '@env';
+import {No_internet_alert} from '../../component/No_internet_alert';
+import {ViewProfile} from '../../Screens/ViewProfile';
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
+  const [no_internet, set_no_internet] = useState(false);
   const {islogged} = useSelector(store => store.auth);
   const dispatch = useDispatch();
 
@@ -48,7 +51,7 @@ const App_navigation = () => {
 
     try {
       const res = await api_auth_check();
-      console.log('res', res.data);
+      // console.log('res', res.data);
       dispatch(profile_action(res.data.data));
       dispatch(other_user_profile_action(res.data.other_user));
       dispatch(auth_check_team_action(res.data.team));
@@ -57,8 +60,11 @@ const App_navigation = () => {
       splashOffHandle();
     } catch (error) {
       await AsyncStorage.removeItem(USER_UID);
+      if (error.message == 'Network Error') {
+        set_no_internet(true);
+      }
       splashOffHandle();
-      console.log('error', error.response.data);
+      console.log('error', error.message);
     }
   };
 
@@ -76,6 +82,7 @@ const App_navigation = () => {
         {name: 'Add_member', component: Add_member},
         {name: 'Add_team', component: Add_team},
         {name: 'Edit_profile', component: Edit_profile},
+        {name: 'ViewProfile', component: ViewProfile},
         {name: 'Settings', component: Settings},
         {name: 'NewPassword', component: NewPassword},
         {name: 'OTPVerification', component: OTPVerification},
@@ -90,7 +97,9 @@ const App_navigation = () => {
         {name: 'OTPVerification', component: OTPVerification},
       ];
 
-  return splash_screen ? (
+  return no_internet ? (
+    <No_internet_alert />
+  ) : splash_screen ? (
     <Splash_screen />
   ) : (
     <NavigationContainer>

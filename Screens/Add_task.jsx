@@ -23,10 +23,9 @@ export const Add_task = () => {
   const filteredUsers = team.filter(team => team_id.includes(team._id));
 
   const inputValue = (text, id) => {
-    if (id == 'start_time' || id == 'end_time') {
-      if (text == '') {
-        setErrorMsg({...errorMsg, [id]: ''});
-      } else {
+    setErrorMsg({...errorMsg, [id]: ''});
+    if (id !== 'task_name') {
+      if (text !== '') {
         const timeFormat = /^([1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM)$/i;
         if (timeFormat.test(text)) {
           setErrorMsg({...errorMsg, [id]: ''});
@@ -49,13 +48,15 @@ export const Add_task = () => {
       });
       dispatch(add_task_action(res.data.task));
       navigation.navigate('Projects');
-      console.log('res', res.data);
+      // console.log('res', res.data);
     } catch (err) {
       set_btn_loading(false);
       if (err.response.data) {
         const {message, success} = err.response.data;
         if (message.includes('task_name:')) {
           setErrorMsg({task_name: 'Task Name is required.'});
+        } else if (message.includes('team:')) {
+          setErrorMsg({team: 'At least one team must be selected.'});
         } else if (message.includes('start_time:')) {
           setErrorMsg({start_time: 'Start Time is required.'});
         } else if (message.includes('end_time:')) {
@@ -88,9 +89,6 @@ export const Add_task = () => {
   const month = months[newDate.getMonth()];
   const year = newDate.getFullYear();
 
-  const avatar_uri =
-    'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png';
-
   const start_end_time = [
     {
       id: 'start_time',
@@ -121,7 +119,6 @@ export const Add_task = () => {
     some_text,
     team_scroll,
     add_icon_style,
-    date_style,
     aligning,
     submit_btn_style,
   } = styles;
@@ -146,14 +143,17 @@ export const Add_task = () => {
         <SomeText text="Team" myStyle={some_text} />
 
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
-          {filteredUsers?.map(({team_name, _id}, i) => (
+          {filteredUsers?.map(({team_name, _id, team_avatar_url}, i) => (
             <View style={{alignItems: 'center', marginVertical: 10}} key={i}>
-              <Avatar.Image
-                size={45}
-                source={{
-                  uri: avatar_uri,
-                }}
-              />
+              <View
+                style={{borderWidth: 2, borderColor: color, borderRadius: 100}}>
+                <Avatar.Image
+                  size={45}
+                  source={{
+                    uri: team_avatar_url,
+                  }}
+                />
+              </View>
 
               <IconButton
                 onPress={() => dispatch(cut_team_action(_id))}
@@ -162,7 +162,7 @@ export const Add_task = () => {
                 size={20}
                 style={{
                   position: 'absolute',
-                  bottom: 40,
+                  bottom: 45,
                   alignItems: 'flex-end',
                 }}
               />
@@ -174,15 +174,24 @@ export const Add_task = () => {
               <IconButton
                 size={30}
                 icon={'plus'}
-                iconColor={primary}
+                iconColor={
+                  errorMsg.team && team_id.length == 0 ? 'red' : primary
+                }
                 style={[
                   add_icon_style,
-                  {borderColor: primary, marginVertical: 5},
+                  {
+                    borderColor:
+                      errorMsg.team && team_id.length == 0 ? 'red' : primary,
+                    marginVertical: 5,
+                  },
                 ]}
                 onPress={() => navigation.navigate('Add_team')}
               />
             ))}
         </ScrollView>
+        {errorMsg.team && team_id.length == 0 && (
+          <SomeText myStyle={{color: 'red'}} text={errorMsg.team} />
+        )}
 
         <SomeText text="Date" myStyle={some_text} />
 
@@ -263,15 +272,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 50,
     margin: 0,
-  },
-  date_style: {
-    borderWidth: 0.5,
-    borderRadius: 15,
-    borderColor: '#E9F1FF',
-    padding: 15,
-    fontSize: 17,
-    color: 'black',
-    fontWeight: 'bold',
   },
   aligning: {
     flexDirection: 'row',

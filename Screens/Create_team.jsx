@@ -27,7 +27,6 @@ export const Create_team = () => {
   const inputValue = (text, id) => {
     setData({...data, [id]: text});
   };
-
   const submit_handle = async () => {
     // console.log('data', data);
     set_btn_loading(true);
@@ -38,13 +37,15 @@ export const Create_team = () => {
       });
       dispatch(create_team_action(res.data.team));
       navigation.navigate('Chat');
-      console.log('res', res.data);
+      // console.log('res', res.data);
     } catch (err) {
       set_btn_loading(false);
       if (err.response.data) {
         const {message, success} = err.response.data;
         if (message.includes('team_name:')) {
           setErrorMsg({team_name: 'Task Name is required.'});
+        } else if (message.includes('members:')) {
+          setErrorMsg({members: 'The team must have at least one member.'});
         } else {
           setErrorMsg({other: message});
         }
@@ -78,8 +79,6 @@ export const Create_team = () => {
       label: 'Secret',
     },
   ];
-  const avatar_uri =
-    'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png';
 
   const {
     container,
@@ -144,14 +143,17 @@ export const Create_team = () => {
 
         <SomeText text="Team Member" myStyle={some_text} />
         <ScrollView horizontal contentContainerStyle={[team_scroll]}>
-          {filteredUsers?.map(({username, _id}, i) => (
+          {filteredUsers?.map(({username, _id, avatar_url}, i) => (
             <View style={{alignItems: 'center', marginVertical: 10}} key={i}>
-              <Avatar.Image
-                size={45}
-                source={{
-                  uri: avatar_uri,
-                }}
-              />
+              <View
+                style={{borderWidth: 2, borderColor: color, borderRadius: 100}}>
+                <Avatar.Image
+                  size={45}
+                  source={{
+                    uri: avatar_url,
+                  }}
+                />
+              </View>
               <IconButton
                 onPress={() => dispatch(cut_member_action(_id))}
                 icon="close-circle"
@@ -159,7 +161,7 @@ export const Create_team = () => {
                 size={20}
                 style={{
                   position: 'absolute',
-                  bottom: 40,
+                  bottom: 45,
                   alignItems: 'flex-end',
                 }}
               />
@@ -170,15 +172,24 @@ export const Create_team = () => {
             <IconButton
               size={30}
               icon={'plus'}
-              iconColor={primary}
+              iconColor={
+                errorMsg.members && member_id.length == 0 ? 'red' : primary
+              }
               style={[
                 icon_btn_style,
-                {borderColor: primary, marginVertical: 5},
+                {
+                  borderColor:
+                    errorMsg.members && member_id.length == 0 ? 'red' : primary,
+                  marginVertical: 5,
+                },
               ]}
               onPress={() => navigation.navigate('Add_member')}
             />
           )}
         </ScrollView>
+        {errorMsg.members && member_id.length == 0 && (
+          <SomeText myStyle={{color: 'red'}} text={errorMsg.members} />
+        )}
         <SomeText text="Type" myStyle={some_text} />
         <View style={[aligning]}>
           {type_detals.map(({label}, i) => {

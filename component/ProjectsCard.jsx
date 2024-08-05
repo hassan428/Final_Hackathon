@@ -4,10 +4,15 @@ import {SomeText} from './Text_component';
 import {Avatar, ProgressBar} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 
-export const ProjectsCard = props => {
+export const ProjectsCard = ({
+  progress_num,
+  progress_str,
+  heading,
+  title,
+  member_array,
+}) => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
 
-  const {progress_num, progress_str, heading, title} = props;
   const {avatar_view, aligning, container} = styles;
   return (
     <View style={[container]}>
@@ -28,23 +33,26 @@ export const ProjectsCard = props => {
         />
       </View>
 
-      <View style={[aligning, {justifyContent: 'space-evenly'}]}>
+      <View style={[aligning, {justifyContent: 'space-between'}]}>
         <View style={[avatar_view]}>
-          <Avatar.Image
-            size={35}
-            source={{
-              uri: 'https://static.vecteezy.com/system/resources/thumbnails/011/675/374/small_2x/man-avatar-image-for-profile-png.png',
-            }}
-          />
-          <Avatar.Image
-            size={35}
-            style={{right: 10}}
-            source={{
-              uri: 'https://img.freepik.com/free-photo/portrait-man-laughing_23-2148859448.jpg?size=338&ext=jpg&ga=GA1.1.2113030492.1720224000&semt=ais_user',
-            }}
-          />
+          {member_array?.map(({avatar_url}, i) => (
+            <View
+              key={i}
+              style={{
+                borderWidth: 2,
+                borderColor: color,
+                borderRadius: 100,
+              }}>
+              <Avatar.Image
+                size={35}
+                source={{
+                  uri: avatar_url,
+                }}
+              />
+            </View>
+          ))}
         </View>
-        <View style={{width: '80%'}}>
+        <View style={{width: '70%'}}>
           <ProgressBar progress={progress_num} color={primary} />
         </View>
       </View>

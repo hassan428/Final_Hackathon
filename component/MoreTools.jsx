@@ -23,7 +23,7 @@ export const MoreTools = ({visible, Component, onDismiss}) => {
     {
       icon: 'plus-box-outline',
       text: 'Create Project',
-      onPress: () => console.log('Create Project'),
+      onPress: () =>  navigation.navigate('Add_task'),
     },
 
     {

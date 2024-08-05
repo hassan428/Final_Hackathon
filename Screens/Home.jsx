@@ -11,6 +11,8 @@ import {formatDistanceToNow, formatDistanceToNowStrict} from 'date-fns';
 export const Home = () => {
   const {primary, backgroundColor, color} = useSelector(store => store.theme);
   const {task} = useSelector(store => store.task);
+  const {team} = useSelector(store => store.team);
+  const {other_user_profile, profile} = useSelector(store => store.auth);
 
   const daysOfWeek = [
     'Sunday',
@@ -48,17 +50,28 @@ export const Home = () => {
           />
         </View>
 
-        <ScrollView horizontal style={[scroll_view_horizontal]}>
-          {task.map(({task_name, board}, i) => (
-            <TaskCard
-              heading={task_name}
-              text={board}
-              progress_num={i / task.length}
-              progress_str={`${i}/${task.length}`}
-              isThemeChange={i % 2 === 0}
-              key={i}
-            />
-          ))}
+        <ScrollView horizontal contentContainerStyle={[scroll_view_horizontal]}>
+          {task.map(({task_name, board, team: team_id}, i) => {
+            const get_team = team.filter(({_id}) => team_id.includes(_id));
+            const get_member_id = get_team.flatMap(({members}) => members);
+
+            const get_other_member_details = other_user_profile.filter(
+              ({_id}) => get_member_id.includes(_id),
+            );
+
+            const member_array = [...get_other_member_details, profile];
+            return (
+              <TaskCard
+                heading={task_name}
+                text={board}
+                progress_num={i / task.length}
+                progress_str={`${i}/${task.length}`}
+                isThemeChange={i % 2 === 0}
+                key={i}
+                member_array={member_array}
+              />
+            );
+          })}
         </ScrollView>
 
         <View style={[center, progress_view]}>
@@ -68,7 +81,6 @@ export const Home = () => {
             iconColor={color}
             size={30}
             style={{left: 10}}
-            onPress={() => console.log('Pressed')}
           />
         </View>
       </View>
@@ -81,9 +93,8 @@ export const Home = () => {
             time={formatDistanceToNowStrict(new Date(createdAt), {
               addSuffix: true,
             })}
-            percentage={Math.random().toFixed() + i}
+            percentage={i}
             key={i}
-            // progress_str={`${i + 10}/${task.length + 10}`}
           />
         ))}
       </ScrollView>
@@ -102,7 +113,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   scroll_view_horizontal: {
-    // padding: 10,
+    paddingHorizontal: 10,
   },
   center: {
     flexDirection: 'row',

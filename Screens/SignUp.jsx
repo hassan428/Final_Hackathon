@@ -13,10 +13,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {validateEmail} from '../utils/validate_email';
 import {Loading} from '../component/Loading';
 import {USER_UID} from '@env';
+import {Radio_btn} from '../component/Radio_btn';
 
 export const SignUp = () => {
   const [data, setData] = useState({});
   const [errorMsg, setErrorMsg] = useState({});
+  const [gender, set_gender] = useState('Male');
   const [btn_loading, set_btn_loading] = useState(false);
   const navigation = useNavigation();
   const [loading, set_loading] = useState(false);
@@ -33,7 +35,6 @@ export const SignUp = () => {
     if (id !== 'full_name') text = text.split(' ').join('');
     setData({...data, [id]: text});
   };
-
   const submit_handle = async () => {
     try {
       const values = Object.values(data);
@@ -51,7 +52,7 @@ export const SignUp = () => {
       } else {
         setErrorMsg('');
         set_btn_loading(true);
-        const res = await api_signup(data);
+        const res = await api_signup({...data, gender});
         set_loading(true);
         // console.log('res', res.data.data);
         await AsyncStorage.setItem(USER_UID, res.data.data._id);
@@ -77,19 +78,31 @@ export const SignUp = () => {
           setErrorMsg({other: message});
         }
       } else {
-        setErrorMsg({other: err.message});
+        setErrorMsg({other: 'an unknown error occurred'});
       }
     }
   };
 
   // console.log('data', data)
-  const log_in_with_google = () => {
-    console.log('log_in_with_google');
+  const sign_up_with_google = () => {
+    console.log('sign_up_with_google');
   };
 
-  const log_in_with_github = () => {
-    console.log('log_in_with_github');
+  const sign_up_with_github = () => {
+    console.log('sign_up_with_github');
   };
+
+  const radio_data = [
+    {
+      text: 'Male',
+    },
+    {
+      text: 'Female',
+    },
+    {
+      text: 'Others',
+    },
+  ];
 
   const {
     heading_view,
@@ -143,6 +156,14 @@ export const SignUp = () => {
               <SomeText myStyle={err_msg} text={errorMsg.username} />
             )}
           </View>
+
+          <Radio_btn
+            primary={primary}
+            color={color}
+            radio_data={radio_data}
+            value={gender}
+            onValueChange={val => set_gender(val)}
+          />
 
           <View>
             <Custom_input
@@ -204,14 +225,14 @@ export const SignUp = () => {
             icon="apple"
             iconColor={color}
             size={30}
-            onPress={log_in_with_github}
+            onPress={sign_up_with_github}
           />
 
           <IconButton
             icon="google"
             iconColor={color}
             size={30}
-            onPress={log_in_with_google}
+            onPress={sign_up_with_google}
           />
         </View>
 

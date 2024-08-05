@@ -59,7 +59,7 @@ export const LogIn = () => {
         setErrorMsg('');
         set_btn_loading(true);
         const res_login = await api_login(data);
-        console.log('res_login', res_login.data);
+        // console.log('res_login', res_login.data);
         set_loading(true);
         await AsyncStorage.setItem(TOKEN_NAME, res_login.data.token);
         const res = await api_auth_check();
@@ -68,7 +68,7 @@ export const LogIn = () => {
         dispatch(auth_check_team_action(res.data.team));
         dispatch(auth_check_task_action(res.data.task));
         dispatch(islogged_action(true));
-        console.log('res', res.data);
+        // console.log('res', res.data);
         set_loading(false);
       }
     } catch (err) {
@@ -80,7 +80,7 @@ export const LogIn = () => {
       } else {
         setErrorMsg({other: message});
       }
-      console.log(message);
+      console.log('err.response', err.response);
     }
   };
 

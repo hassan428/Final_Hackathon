@@ -40,7 +40,7 @@ export const NewPassword = () => {
         const res = await api_set_new_password({...data, _id});
         const {success, message} = res.data;
         set_res_show({showAlert: success, text: message});
-        console.log('res', res.data);
+        // console.log('res', res.data);
         set_btn_loading(false);
       }
     } catch (err) {
