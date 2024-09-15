@@ -36,6 +36,7 @@ export const Projects = () => {
         title={`Projects`}
         leftIcon={'chevron-left'}
         rightIcon={'plus'}
+        rightIconHandle={() => navigation.navigate('Add_task')}
         leftIconHandle={() => navigation.goBack()}
       />
       <View style={[container, {backgroundColor}]}>

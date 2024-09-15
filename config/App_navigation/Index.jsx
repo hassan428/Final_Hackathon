@@ -32,6 +32,7 @@ import {auth_check_task_action} from '../../store/slices/task_slice';
 import {USER_UID, DARK_MODE_KEY} from '@env';
 import {No_internet_alert} from '../../component/No_internet_alert';
 import {ViewProfile} from '../../Screens/ViewProfile';
+import {About} from '../../Screens/About';
 const App_navigation = () => {
   const [splash_screen, setSplash_screen] = useState(true);
   const [no_internet, set_no_internet] = useState(false);
@@ -77,6 +78,7 @@ const App_navigation = () => {
   const stackScreenArray = islogged
     ? [
         {name: 'BottomTabs', component: BottomTabs},
+        {name: 'About', component: About},
         {name: 'Create_team', component: Create_team},
         {name: 'Add_task', component: Add_task},
         {name: 'Add_member', component: Add_member},
