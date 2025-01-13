@@ -118,6 +118,7 @@ export const OTPVerification = () => {
                 onChangeText={text => handleChange(text, index)}
                 keyboardType="number-pad"
                 maxLength={1}
+                
               />
             ))}
           </View>
